@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Suno Prompt">
+<title>✦ Suno Prompt Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inconsolata:wght@400;600&family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #07070f;
+    --surface: rgba(255,255,255,0.03);
+    --border: rgba(100,180,255,0.18);
+    --accent: #38bdf8;
+    --accent2: #0369a1;
+    --text: #e8f4ff;
+    --muted: #6a8a9a;
+    --green: #34d399;
+    --gold: #fbbf24;
+    --error: #f87171;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body { background: var(--bg); color: var(--text); font-family: 'Lora', Georgia, serif; min-height: 100vh; min-height: -webkit-fill-available; padding-bottom: env(safe-area-inset-bottom); overflow-x: hidden; }
+  .orb { position: fixed; border-radius: 50%; pointer-events: none; z-index: 0; filter: blur(80px); }
+  .orb1 { top: -15%; left: -15%; width: 400px; height: 400px; background: radial-gradient(circle, rgba(3,105,161,0.3) 0%, transparent 70%); }
+  .orb2 { bottom: -20%; right: -15%; width: 500px; height: 500px; background: radial-gradient(circle, rgba(56,189,248,0.15) 0%, transparent 70%); }
+  .container { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; padding: 0 16px 80px; }
+  .header { text-align: center; padding: 48px 20px 32px; border-bottom: 1px solid var(--border); }
+  .header-eyebrow { font-family: 'Inconsolata', monospace; font-size: 10px; letter-spacing: 6px; color: var(--accent); text-transform: uppercase; margin-bottom: 12px; }
+  .header h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 8vw, 3rem); font-weight: 900; line-height: 1.1; background: linear-gradient(135deg, #bae6fd, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .header p { font-family: 'Inconsolata', monospace; font-size: 11px; letter-spacing: 3px; color: var(--muted); margin-top: 10px; text-transform: uppercase; }
+  .keys-section { margin-top: 28px; background: rgba(56,189,248,0.05); border: 1px solid rgba(56,189,248,0.2); border-radius: 14px; padding: 18px; }
+  .keys-title { font-family: 'Inconsolata', monospace; font-size: 10px; letter-spacing: 5px; color: var(--accent); text-transform: uppercase; margin-bottom: 14px; }
+  .key-row { display: flex; gap: 8px; align-items: center; margin-bottom: 10px; }
+  .key-row:last-of-type { margin-bottom: 0; }
+  .key-label { font-family: 'Inconsolata', monospace; font-size: 10px; color: var(--muted); letter-spacing: 2px; min-width: 80px; }
+  .key-input { flex: 1; background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; color: var(--text); font-family: 'Inconsolata', monospace; font-size: 12px; outline: none; -webkit-appearance: none; }
+  .key-input:focus { border-color: var(--accent); }
+  .key-saved { font-family: 'Inconsolata', monospace; font-size: 10px; color: var(--green); margin-top: 8px; letter-spacing: 1px; display: none; }
+  .keys-hint { font-family: 'Inconsolata', monospace; font-size: 10px; color: rgba(106,138,154,0.7); margin-top: 10px; letter-spacing: 1px; line-height: 1.6; }
+  .section-label { font-family: 'Inconsolata', monospace; font-size: 10px; letter-spacing: 5px; color: var(--accent); text-transform: uppercase; margin: 24px 0 8px; }
+  input[type="text"], input[type="password"] { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; color: var(--text); font-family: 'Lora', Georgia, serif; font-size: 15px; outline: none; -webkit-appearance: none; transition: border-color 0.2s; }
+  input[type="text"]:focus, input[type="password"]:focus { border-color: rgba(56,189,248,0.6); }
+  input::placeholder { color: var(--muted); font-style: italic; }
+  .toggle-group { display: flex; flex-wrap: wrap; gap: 8px; }
+  .toggle-btn { padding: 8px 14px; border-radius: 50px; border: 1.5px solid var(--border); background: transparent; color: var(--muted); font-family: 'Inconsolata', monospace; font-size: 12px; letter-spacing: 1px; cursor: pointer; transition: all 0.15s; -webkit-appearance: none; }
+  .toggle-btn.active { border-color: var(--accent); background: rgba(56,189,248,0.15); color: #bae6fd; transform: scale(1.04); }
+  .generate-btn { width: 100%; margin-top: 28px; padding: 18px; border-radius: 14px; border: none; background: linear-gradient(135deg, var(--accent2), var(--accent)); color: #fff; font-family: 'Inconsolata', monospace; font-size: 14px; font-weight: 700; letter-spacing: 4px; text-transform: uppercase; cursor: pointer; box-shadow: 0 0 30px rgba(56,189,248,0.25); transition: all 0.2s; -webkit-appearance: none; }
+  .generate-btn:active { transform: scale(0.98); opacity: 0.9; }
+  .generate-btn:disabled { background: rgba(56,189,248,0.2); color: var(--muted); box-shadow: none; cursor: not-allowed; }
+  .status { font-family: 'Inconsolata', monospace; font-size: 12px; letter-spacing: 2px; color: var(--accent); margin-top: 20px; text-align: center; padding: 14px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); display: none; }
+  .status.visible { display: block; }
+  .status.error { color: var(--error); border-color: rgba(248,113,113,0.3); }
+  .output-box { margin-top: 24px; border-radius: 16px; padding: 20px; animation: fadeUp 0.4s ease both; }
+  .full-box { background: rgba(0,0,0,0.3); border: 1px solid rgba(56,189,248,0.25); }
+  .short-box { background: rgba(52,211,153,0.04); border: 1px solid rgba(52,211,153,0.25); margin-top: 16px; }
+  .spotify-box { background: rgba(251,191,36,0.04); border: 1px solid rgba(251,191,36,0.2); margin-top: 16px; }
+  .box-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .box-title { font-family: 'Inconsolata', monospace; font-size: 10px; letter-spacing: 5px; color: var(--accent); text-transform: uppercase; }
+  .short-box .box-title { color: var(--green); }
+  .spotify-box .box-title { color: var(--gold); }
+  .copy-btn { padding: 6px 16px; border-radius: 50px; border: 1.5px solid var(--border); background: transparent; color: var(--muted); font-family: 'Inconsolata', monospace; font-size: 11px; letter-spacing: 2px; cursor: pointer; transition: all 0.2s; -webkit-appearance: none; min-width: 64px; text-align: center; }
+  .copy-btn.copied { color: #bae6fd; border-color: var(--accent); }
+  .prompt-text { font-family: 'Lora', Georgia, serif; font-size: 15px; line-height: 1.9; color: var(--text); white-space: pre-wrap; word-break: break-word; }
+  .short-box .prompt-text { color: #a7f3d0; }
+  .spotify-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px; }
+  .spotify-item { background: rgba(0,0,0,0.2); border-radius: 8px; padding: 10px 12px; }
+  .spotify-item-label { font-family: 'Inconsolata', monospace; font-size: 9px; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; margin-bottom: 4px; }
+  .spotify-item-value { font-family: 'Inconsolata', monospace; font-size: 13px; color: #fef3c7; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+  .pulsing { animation: pulse 1.2s ease infinite; }
+</style>
+</head>
+<body>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="container">
+  <div class="header">
+    <div class="header-eyebrow">✦ Suno Prompt Studio ✦</div>
+    <h1>Your Sound.<br>Your Prompt.</h1>
+    <p>Powered by Spotify · Last.fm · Groq</p>
+  </div>
+  <div class="keys-section">
+    <div class="keys-title">API Keys</div>
+    <div class="key-row"><div class="key-label">GROQ</div><input type="password" id="key-groq" class="key-input" placeholder="gsk_..."></div>
+    <div class="key-row"><div class="key-label">SPOTIFY ID</div><input type="password" id="key-spotify-id" class="key-input" placeholder="Client ID..."></div>
+    <div class="key-row"><div class="key-label">SPOTIFY SEC</div><input type="password" id="key-spotify-sec" class="key-input" placeholder="Client Secret..."></div>
+    <div class="key-row"><div class="key-label">LAST.FM</div><input type="password" id="key-lastfm" class="key-input" placeholder="API Key..."></div>
+    <div class="key-saved" id="keys-saved">✓ Keys saved to this browser</div>
+    <button onclick="saveKeys()" style="margin-top:12px;background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.3);border-radius:10px;padding:8px 16px;color:var(--accent);font-family:'Inconsolata',monospace;font-size:11px;letter-spacing:2px;cursor:pointer;">Save Keys</button>
+    <div class="keys-hint">Get free keys at: console.groq.com · developer.spotify.com · last.fm/api</div>
+  </div>
+  <div class="section-label">Artist(s) *</div>
+  <input type="text" id="artist" placeholder="e.g. Hozier  or  Hozier meets Phoebe Bridgers">
+  <div class="section-label">Song <span style="color:var(--muted);font-size:9px;letter-spacing:2px">(OPTIONAL)</span></div>
+  <input type="text" id="song" placeholder="e.g. Take Me To Church  (leave blank for general style)">
+  <div class="section-label">Mood</div>
+  <div class="toggle-group" id="mood-group">
+    <button class="toggle-btn active" data-value="">No preference</button>
+    <button class="toggle-btn" data-value="slow and emotional">🌙 Slow & Emotional</button>
+    <button class="toggle-btn" data-value="fast and energetic">⚡ Fast & Energetic</button>
+    <button class="toggle-btn" data-value="acoustic and stripped back">🎸 Acoustic</button>
+    <button class="toggle-btn" data-value="dark and heavy">🖤 Dark & Heavy</button>
+    <button class="toggle-btn" data-value="uplifting and anthemic">✨ Anthemic</button>
+    <button class="toggle-btn" data-value="atmospheric and ambient">🌊 Atmospheric</button>
+    <button class="toggle-btn" data-value="aggressive and intense">😤 Aggressive</button>
+    <button class="toggle-btn" data-value="melancholic and brooding">💔 Melancholic</button>
+    <button class="toggle-btn" data-value="epic and cinematic">🎬 Cinematic</button>
+  </div>
+  <button class="generate-btn" id="generate-btn" onclick="generate()">✦ &nbsp; Generate Suno Prompt</button>
+  <div class="status" id="status"></div>
+  <div id="output"></div>
+</div>
+<script>
+const GROQ_URL="https://api.groq.com/openai/v1/chat/completions";
+const GROQ_MODEL="llama-3.3-70b-versatile";
+
+window.addEventListener('load',()=>{const keys=['groq','spotify-id','spotify-sec','lastfm'];let anySaved=false;keys.forEach(k=>{const val=localStorage.getItem(`key_${k}`);if(val){document.getElementById(`key-${k}`).value=val;anySaved=true;}});if(anySaved)document.getElementById('keys-saved').style.display='block';});
+function saveKeys(){const keys=['groq','spotify-id','spotify-sec','lastfm'];keys.forEach(k=>{const val=document.getElementById(`key-${k}`).value.trim();if(val)localStorage.setItem(`key_${k}`,val);});document.getElementById('keys-saved').style.display='block';}
+function getKey(k){return document.getElementById(`key-${k}`).value.trim();}
+document.querySelectorAll('.toggle-group').forEach(group=>{group.querySelectorAll('.toggle-btn').forEach(btn=>{btn.addEventListener('click',()=>{group.querySelectorAll('.toggle-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');});});});
+function getSelected(groupId){return document.querySelector(`#${groupId} .toggle-btn.active`)?.dataset.value||'';}
+function copyText(text,btn){const fallback=()=>{const ta=document.createElement('textarea');ta.value=text;ta.style.cssText='position:fixed;opacity:0;top:0;left:0';document.body.appendChild(ta);ta.focus();ta.select();try{document.execCommand('copy');btn.textContent='✓ Copied!';btn.classList.add('copied');setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('copied');},2000);}catch(e){btn.textContent='Failed';}document.body.removeChild(ta);};if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(text).then(()=>{btn.textContent='✓ Copied!';btn.classList.add('copied');setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('copied');},2000);}).catch(fallback);}else{fallback();}}
+function setStatus(msg,isError=false){const el=document.getElementById('status');el.textContent=msg;el.className='status visible'+(isError?' error':' pulsing');}
+function clearStatus(){document.getElementById('status').className='status';}
+
+async function getSpotifyToken(){const id=getKey('spotify-id');const sec=getKey('spotify-sec');if(!id||!sec)return null;const encoded=btoa(`${id}:${sec}`);const res=await fetch('https://accounts.spotify.com/api/token',{method:'POST',headers:{'Authorization':`Basic ${encoded}`,'Content-Type':'application/x-www-form-urlencoded'},body:'grant_type=client_credentials'});const data=await res.json();return data.access_token||null;}
+
+async function getSpotifyFeatures(artist,song){try{const token=await getSpotifyToken();if(!token)return null;const headers={'Authorization':`Bearer ${token}`};const searchRes=await fetch(`https://api.spotify.com/v1/search?q=track:${encodeURIComponent(song)}%20artist:${encodeURIComponent(artist)}&type=track&limit=1`,{headers});const searchData=await searchRes.json();const tracks=searchData?.tracks?.items;if(!tracks?.length)return null;const trackId=tracks[0].id;const featRes=await fetch(`https://api.spotify.com/v1/audio-features/${trackId}`,{headers});const f=await featRes.json();if(!f)return null;return{bpm:Math.round(f.tempo),energy:f.energy>0.8?'extremely high energy':f.energy>0.6?'high energy':f.energy>0.4?'moderate energy':'low energy',mood:f.valence>0.7?'very happy and uplifting':f.valence>0.5?'positive':f.valence<0.3?'melancholic and dark':'neutral mood',acoustic:f.acousticness>0.7?'highly acoustic':f.acousticness>0.3?'slightly acoustic':'fully electronic/electric',groove:f.danceability>0.7?'very danceable and groovy':f.danceability>0.4?'moderately groovy':'not groove focused',loudness:`${f.loudness.toFixed(1)} dB`};}catch(e){return null;}}
+
+async function getSpotifyArtistStyle(artist){try{const token=await getSpotifyToken();if(!token)return null;const headers={'Authorization':`Bearer ${token}`};const searchRes=await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(artist)}&type=artist&limit=1`,{headers});const data=await searchRes.json();const artists=data?.artists?.items;if(!artists?.length)return null;return{genres:artists[0].genres?.slice(0,6)||[],name:artists[0].name};}catch(e){return null;}}
+
+async function getLastFm(artist,song){try{const key=getKey('lastfm');if(!key)return{tags:[],similar:[]};const base='https://ws.audioscrobbler.com/2.0/';if(song){const res=await fetch(`${base}?method=track.getInfo&artist=${encodeURIComponent(artist)}&track=${encodeURIComponent(song)}&api_key=${key}&format=json`);const data=await res.json();const tags=data?.track?.toptags?.tag?.slice(0,8).map(t=>t.name)||[];return{tags};}const[tagsRes,simRes]=await Promise.all([fetch(`${base}?method=artist.gettoptags&artist=${encodeURIComponent(artist)}&api_key=${key}&format=json`),fetch(`${base}?method=artist.getsimilar&artist=${encodeURIComponent(artist)}&api_key=${key}&format=json&limit=5`)]);const tagsData=await tagsRes.json();const simData=await simRes.json();const tags=tagsData?.toptags?.tag?.slice(0,8).map(t=>t.name)||[];const similar=simData?.similarartists?.artist?.slice(0,5).map(a=>a.name)||[];return{tags,similar};}catch(e){return{tags:[],similar:[]};}}
+
+async function groqCall(messages){const key=getKey('groq');if(!key)throw new Error('No Groq API key');const res=await fetch(GROQ_URL,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${key}`},body:JSON.stringify({model:GROQ_MODEL,messages,max_tokens:1000,temperature:0.7})});if(!res.ok){const err=await res.json();throw new Error(err?.error?.message||`API error ${res.status}`);}const data=await res.json();return data.choices[0].message.content.trim();}
+
+async function fetchArtistData(artistName, song=''){
+  const[spotifyGenres, lastfmData] = await Promise.all([
+    getSpotifyArtistStyle(artistName),
+    getLastFm(artistName, song)
+  ]);
+  let spotifyFeatures = null;
+  if(song) spotifyFeatures = await getSpotifyFeatures(artistName, song);
+  return { spotifyGenres, lastfmData, spotifyFeatures };
+}
+
+function buildArtistContext(artistName, data, index){
+  let ctx = `\nARTIST ${index}: ${artistName}\n`;
+  if(data.spotifyFeatures){
+    const f = data.spotifyFeatures;
+    ctx += `Spotify Audio Data: BPM=${f.bpm}, Energy=${f.energy}, Mood=${f.mood}, Acoustic=${f.acoustic}, Groove=${f.groove}, Loudness=${f.loudness}\n`;
+  }
+  if(data.spotifyGenres?.genres?.length) ctx += `Spotify Genres: ${data.spotifyGenres.genres.join(', ')}\n`;
+  if(data.lastfmData?.tags?.length) ctx += `Last.fm Tags: ${data.lastfmData.tags.join(', ')}\n`;
+  if(data.lastfmData?.similar?.length) ctx += `Similar Artists: ${data.lastfmData.similar.join(', ')}\n`;
+  return ctx;
+}
+
+async function generate(){
+  const artist=document.getElementById('artist').value.trim();
+  const song=document.getElementById('song').value.trim();
+  const mood=getSelected('mood-group');
+  if(!getKey('groq')){setStatus('⚠ Paste your Groq API key first',true);return;}
+  if(!artist){setStatus('⚠ Enter an artist name first',true);return;}
+  document.getElementById('generate-btn').disabled=true;
+  document.getElementById('output').innerHTML='';
+
+  const blendSeps=[' meets ',' and ',' x ',' + '];
+  let artists=[artist];
+  for(const sep of blendSeps){
+    if(artist.toLowerCase().includes(sep.toLowerCase())){
+      const idx=artist.toLowerCase().indexOf(sep.toLowerCase());
+      artists=[artist.slice(0,idx).trim(),artist.slice(idx+sep.length).trim()];
+      break;
+    }
+  }
+
+  const isBlend = artists.length > 1;
+  setStatus(isBlend ? '✦ Fetching data for both artists...' : '✦ Fetching Spotify data...');
+
+  let context = `Input: ${artist}\n`;
+  if(song) context += `Song reference: ${song}\n`;
+  if(mood) context += `User mood preference: ${mood}\n`;
+
+  try{
+    if(isBlend){
+      const [data1, data2] = await Promise.all([
+        fetchArtistData(artists[0], song),
+        fetchArtistData(artists[1], '')
+      ]);
+      context += buildArtistContext(artists[0], data1, 1);
+      context += buildArtistContext(artists[1], data2, 2);
+      context += `\nBLEND INSTRUCTION: These two artists have distinct sounds that should COLLIDE not blend smoothly. Describe the contrast — quiet intimate elements from one artist exploding into heavy powerful elements from the other. The tension between them is what makes this interesting.\n`;
+    } else {
+      const data = await fetchArtistData(artists[0], song);
+      context += buildArtistContext(artists[0], data, 1);
+    }
+  }catch(e){}
+
+  setStatus('✦ Generating your Suno prompt...');
+
+  try{
+    const systemPrompt = `You are an expert music analyst and Suno AI prompt engineer.
+Using the artist data provided, generate TWO versions of a Suno prompt.
+
+VERSION 1 - FULL: Detailed prompt covering genre, BPM, instruments, vocals, production style, mood, texture, and unique sonic elements. 2-4 sentences.
+${isBlend ? 'For blends: highlight the CONTRAST and COLLISION between the two sounds. Describe how quiet intimate moments explode into heavy powerful sections. Do not average them together — make the tension the feature.' : ''}
+VERSION 2 - SHORT: Under 400 characters. Most important tags and descriptors only, comma separated. Must fit in Suno's style box.
+
+Priority: Spotify audio data → Last.fm tags → mood preference → similar artists for texture only.
+Be specific with instruments and production techniques.
+IMPORTANT: Never mention any artist names, band names, song titles, or musician names.
+
+Output in this exact format with no extra text:
+FULL: [full prompt here]
+SHORT: [short prompt here]`;
+
+    const raw=await groqCall([{role:'system',content:systemPrompt},{role:'user',content:context}]);
+    let full='',short='';
+    for(const line of raw.split('\n')){
+      if(line.startsWith('FULL:'))full=line.slice(5).trim();
+      else if(line.startsWith('SHORT:'))short=line.slice(6).trim();
+    }
+
+    clearStatus();
+
+    const artist1Data = isBlend ? await fetchArtistData(artists[0], song) : null;
+    const spotifyHtml = isBlend ? '' : await buildSpotifyBox(artists[0], song);
+
+    document.getElementById('output').innerHTML=`
+      <div class="output-box full-box"><div class="box-header"><div class="box-title">✦ Full Prompt</div><button class="copy-btn" id="copy-full">Copy</button></div><div class="prompt-text">${full.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div></div>
+      <div class="output-box short-box"><div class="box-header"><div class="box-title">✦ Short Prompt — Suno Ready</div><button class="copy-btn" id="copy-short">Copy</button></div><div class="prompt-text">${short.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div></div>
+      ${spotifyHtml}`;
+
+    document.getElementById('copy-full').addEventListener('click',function(){copyText(full,this);});
+    document.getElementById('copy-short').addEventListener('click',function(){copyText(short,this);});
+  }catch(e){setStatus('⚠ '+e.message,true);}
+  document.getElementById('generate-btn').disabled=false;
+}
+
+async function buildSpotifyBox(artist, song){
+  try{
+    if(!song) return '';
+    const data = await getSpotifyFeatures(artist, song);
+    if(!data) return '';
+    return `<div class="output-box spotify-box"><div class="box-header"><div class="box-title">✦ Spotify Audio Data</div></div><div class="spotify-grid"><div class="spotify-item"><div class="spotify-item-label">BPM</div><div class="spotify-item-value">${data.bpm}</div></div><div class="spotify-item"><div class="spotify-item-label">Energy</div><div class="spotify-item-value">${data.energy}</div></div><div class="spotify-item"><div class="spotify-item-label">Mood</div><div class="spotify-item-value">${data.mood}</div></div><div class="spotify-item"><div class="spotify-item-label">Acoustic</div><div class="spotify-item-value">${data.acoustic}</div></div><div class="spotify-item"><div class="spotify-item-label">Groove</div><div class="spotify-item-value">${data.groove}</div></div><div class="spotify-item"><div class="spotify-item-label">Loudness</div><div class="spotify-item-value">${data.loudness}</div></div></div></div>`;
+  }catch(e){return '';}
+}
+</script>
+</body>
+</html>
