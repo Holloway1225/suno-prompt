@@ -41,9 +41,13 @@
   .key-saved { font-family: 'Inconsolata', monospace; font-size: 10px; color: var(--green); margin-top: 8px; letter-spacing: 1px; display: none; }
   .keys-hint { font-family: 'Inconsolata', monospace; font-size: 10px; color: rgba(106,138,154,0.7); margin-top: 10px; letter-spacing: 1px; line-height: 1.6; }
   .section-label { font-family: 'Inconsolata', monospace; font-size: 10px; letter-spacing: 5px; color: var(--accent); text-transform: uppercase; margin: 24px 0 8px; }
+  .section-hint { font-family: 'Lora', Georgia, serif; font-size: 12px; color: var(--muted); font-style: italic; margin-bottom: 10px; line-height: 1.6; }
   input[type="text"], input[type="password"] { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; color: var(--text); font-family: 'Lora', Georgia, serif; font-size: 15px; outline: none; -webkit-appearance: none; transition: border-color 0.2s; }
   input[type="text"]:focus, input[type="password"]:focus { border-color: rgba(56,189,248,0.6); }
   input::placeholder { color: var(--muted); font-style: italic; }
+  textarea { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; color: var(--text); font-family: 'Lora', Georgia, serif; font-size: 15px; resize: none; outline: none; -webkit-appearance: none; transition: border-color 0.2s; line-height: 1.6; }
+  textarea:focus { border-color: rgba(56,189,248,0.6); }
+  textarea::placeholder { color: var(--muted); font-style: italic; font-size: 13px; }
   .toggle-group { display: flex; flex-wrap: wrap; gap: 8px; }
   .toggle-btn { padding: 8px 14px; border-radius: 50px; border: 1.5px solid var(--border); background: transparent; color: var(--muted); font-family: 'Inconsolata', monospace; font-size: 12px; letter-spacing: 1px; cursor: pointer; transition: all 0.15s; -webkit-appearance: none; }
   .toggle-btn.active { border-color: var(--accent); background: rgba(56,189,248,0.15); color: #bae6fd; transform: scale(1.04); }
@@ -69,6 +73,7 @@
   .spotify-item { background: rgba(0,0,0,0.2); border-radius: 8px; padding: 10px 12px; }
   .spotify-item-label { font-family: 'Inconsolata', monospace; font-size: 9px; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; margin-bottom: 4px; }
   .spotify-item-value { font-family: 'Inconsolata', monospace; font-size: 13px; color: #fef3c7; }
+  .active-model { font-family: 'Inconsolata', monospace; font-size: 10px; letter-spacing: 2px; margin-top: 8px; color: var(--accent); display: none; }
   @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
   .pulsing { animation: pulse 1.2s ease infinite; }
@@ -90,13 +95,22 @@
     <div class="key-row"><div class="key-label">SPOTIFY SEC</div><input type="password" id="key-spotify-sec" class="key-input" placeholder="Client Secret..."></div>
     <div class="key-row"><div class="key-label">LAST.FM</div><input type="password" id="key-lastfm" class="key-input" placeholder="API Key..."></div>
     <div class="key-saved" id="keys-saved">✓ Keys saved to this browser</div>
+    <div class="active-model" id="active-model"></div>
     <button onclick="saveKeys()" style="margin-top:12px;background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.3);border-radius:10px;padding:8px 16px;color:var(--accent);font-family:'Inconsolata',monospace;font-size:11px;letter-spacing:2px;cursor:pointer;">Save Keys</button>
     <div class="keys-hint">Get free keys at: console.groq.com · developer.spotify.com · last.fm/api</div>
   </div>
-  <div class="section-label">Artist(s) *</div>
-  <input type="text" id="artist" placeholder="e.g. Hozier  or  Hozier meets Phoebe Bridgers">
-  <div class="section-label">Song <span style="color:var(--muted);font-size:9px;letter-spacing:2px">(OPTIONAL)</span></div>
-  <input type="text" id="song" placeholder="e.g. Take Me To Church  (leave blank for general style)">
+
+  <div class="section-label">Artist(s) <span style="color:var(--muted);font-size:9px;letter-spacing:1px">(OPTIONAL)</span></div>
+  <div class="section-hint">For blends use: Hozier meets Phoebe Bridgers, or Hozier x Skillet, or Billie Eilish and NIN</div>
+  <input type="text" id="artist" placeholder="e.g. Hozier  or  Radiohead meets Nine Inch Nails">
+
+  <div class="section-label">Song <span style="color:var(--muted);font-size:9px;letter-spacing:1px">(OPTIONAL)</span></div>
+  <input type="text" id="song" placeholder="e.g. Creep  (pulls real Spotify audio data for this track)">
+
+  <div class="section-label">Sound Description <span style="color:var(--muted);font-size:9px;letter-spacing:1px">(OPTIONAL)</span></div>
+  <div class="section-hint">Describe the sonic collision in your own words. This becomes the creative brief on top of the Spotify data.</div>
+  <textarea id="sound-desc" rows="3" placeholder="e.g. Radiohead anxiety trapped inside a Nine Inch Nails system glitch&#10;e.g. Billie Eilish whispering over a Metallica breakdown&#10;e.g. Coldplay stadium anthem with a Portishead undercurrent of dread"></textarea>
+
   <div class="section-label">Mood</div>
   <div class="toggle-group" id="mood-group">
     <button class="toggle-btn active" data-value="">No preference</button>
@@ -110,6 +124,7 @@
     <button class="toggle-btn" data-value="melancholic and brooding">💔 Melancholic</button>
     <button class="toggle-btn" data-value="epic and cinematic">🎬 Cinematic</button>
   </div>
+
   <button class="generate-btn" id="generate-btn" onclick="generate()">✦ &nbsp; Generate Suno Prompt</button>
   <div class="status" id="status"></div>
   <div id="output"></div>
@@ -118,8 +133,17 @@
 const GROQ_URL="https://api.groq.com/openai/v1/chat/completions";
 const GROQ_MODEL="llama-3.3-70b-versatile";
 
-window.addEventListener('load',()=>{const keys=['groq','spotify-id','spotify-sec','lastfm'];let anySaved=false;keys.forEach(k=>{const val=localStorage.getItem(`key_${k}`);if(val){document.getElementById(`key-${k}`).value=val;anySaved=true;}});if(anySaved)document.getElementById('keys-saved').style.display='block';});
-function saveKeys(){const keys=['groq','spotify-id','spotify-sec','lastfm'];keys.forEach(k=>{const val=document.getElementById(`key-${k}`).value.trim();if(val)localStorage.setItem(`key_${k}`,val);});document.getElementById('keys-saved').style.display='block';}
+window.addEventListener('load',()=>{
+  const keys=['groq','spotify-id','spotify-sec','lastfm'];
+  let anySaved=false;
+  keys.forEach(k=>{const val=localStorage.getItem(`key_${k}`);if(val){document.getElementById(`key-${k}`).value=val;anySaved=true;}});
+  if(anySaved)document.getElementById('keys-saved').style.display='block';
+});
+function saveKeys(){
+  const keys=['groq','spotify-id','spotify-sec','lastfm'];
+  keys.forEach(k=>{const val=document.getElementById(`key-${k}`).value.trim();if(val)localStorage.setItem(`key_${k}`,val);});
+  document.getElementById('keys-saved').style.display='block';
+}
 function getKey(k){return document.getElementById(`key-${k}`).value.trim();}
 document.querySelectorAll('.toggle-group').forEach(group=>{group.querySelectorAll('.toggle-btn').forEach(btn=>{btn.addEventListener('click',()=>{group.querySelectorAll('.toggle-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');});});});
 function getSelected(groupId){return document.querySelector(`#${groupId} .toggle-btn.active`)?.dataset.value||'';}
@@ -127,90 +151,175 @@ function copyText(text,btn){const fallback=()=>{const ta=document.createElement(
 function setStatus(msg,isError=false){const el=document.getElementById('status');el.textContent=msg;el.className='status visible'+(isError?' error':' pulsing');}
 function clearStatus(){document.getElementById('status').className='status';}
 
-async function getSpotifyToken(){const id=getKey('spotify-id');const sec=getKey('spotify-sec');if(!id||!sec)return null;const encoded=btoa(`${id}:${sec}`);const res=await fetch('https://accounts.spotify.com/api/token',{method:'POST',headers:{'Authorization':`Basic ${encoded}`,'Content-Type':'application/x-www-form-urlencoded'},body:'grant_type=client_credentials'});const data=await res.json();return data.access_token||null;}
-
-async function getSpotifyFeatures(artist,song){try{const token=await getSpotifyToken();if(!token)return null;const headers={'Authorization':`Bearer ${token}`};const searchRes=await fetch(`https://api.spotify.com/v1/search?q=track:${encodeURIComponent(song)}%20artist:${encodeURIComponent(artist)}&type=track&limit=1`,{headers});const searchData=await searchRes.json();const tracks=searchData?.tracks?.items;if(!tracks?.length)return null;const trackId=tracks[0].id;const featRes=await fetch(`https://api.spotify.com/v1/audio-features/${trackId}`,{headers});const f=await featRes.json();if(!f)return null;return{bpm:Math.round(f.tempo),energy:f.energy>0.8?'extremely high energy':f.energy>0.6?'high energy':f.energy>0.4?'moderate energy':'low energy',mood:f.valence>0.7?'very happy and uplifting':f.valence>0.5?'positive':f.valence<0.3?'melancholic and dark':'neutral mood',acoustic:f.acousticness>0.7?'highly acoustic':f.acousticness>0.3?'slightly acoustic':'fully electronic/electric',groove:f.danceability>0.7?'very danceable and groovy':f.danceability>0.4?'moderately groovy':'not groove focused',loudness:`${f.loudness.toFixed(1)} dB`};}catch(e){return null;}}
-
-async function getSpotifyArtistStyle(artist){try{const token=await getSpotifyToken();if(!token)return null;const headers={'Authorization':`Bearer ${token}`};const searchRes=await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(artist)}&type=artist&limit=1`,{headers});const data=await searchRes.json();const artists=data?.artists?.items;if(!artists?.length)return null;return{genres:artists[0].genres?.slice(0,6)||[],name:artists[0].name};}catch(e){return null;}}
-
-async function getLastFm(artist,song){try{const key=getKey('lastfm');if(!key)return{tags:[],similar:[]};const base='https://ws.audioscrobbler.com/2.0/';if(song){const res=await fetch(`${base}?method=track.getInfo&artist=${encodeURIComponent(artist)}&track=${encodeURIComponent(song)}&api_key=${key}&format=json`);const data=await res.json();const tags=data?.track?.toptags?.tag?.slice(0,8).map(t=>t.name)||[];return{tags};}const[tagsRes,simRes]=await Promise.all([fetch(`${base}?method=artist.gettoptags&artist=${encodeURIComponent(artist)}&api_key=${key}&format=json`),fetch(`${base}?method=artist.getsimilar&artist=${encodeURIComponent(artist)}&api_key=${key}&format=json&limit=5`)]);const tagsData=await tagsRes.json();const simData=await simRes.json();const tags=tagsData?.toptags?.tag?.slice(0,8).map(t=>t.name)||[];const similar=simData?.similarartists?.artist?.slice(0,5).map(a=>a.name)||[];return{tags,similar};}catch(e){return{tags:[],similar:[]};}}
-
-async function groqCall(messages){const key=getKey('groq');if(!key)throw new Error('No Groq API key');const res=await fetch(GROQ_URL,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${key}`},body:JSON.stringify({model:GROQ_MODEL,messages,max_tokens:1000,temperature:0.7})});if(!res.ok){const err=await res.json();throw new Error(err?.error?.message||`API error ${res.status}`);}const data=await res.json();return data.choices[0].message.content.trim();}
-
-async function fetchArtistData(artistName, song=''){
-  const[spotifyGenres, lastfmData] = await Promise.all([
-    getSpotifyArtistStyle(artistName),
-    getLastFm(artistName, song)
-  ]);
-  let spotifyFeatures = null;
-  if(song) spotifyFeatures = await getSpotifyFeatures(artistName, song);
-  return { spotifyGenres, lastfmData, spotifyFeatures };
+async function getSpotifyToken(){
+  const id=getKey('spotify-id');
+  const sec=getKey('spotify-sec');
+  if(!id||!sec)return null;
+  const encoded=btoa(`${id}:${sec}`);
+  const res=await fetch('https://accounts.spotify.com/api/token',{method:'POST',headers:{'Authorization':`Basic ${encoded}`,'Content-Type':'application/x-www-form-urlencoded'},body:'grant_type=client_credentials'});
+  const data=await res.json();
+  return data.access_token||null;
 }
 
-function buildArtistContext(artistName, data, index){
-  let ctx = `\nARTIST ${index}: ${artistName}\n`;
+async function getSpotifyFeatures(artist,song){
+  try{
+    const token=await getSpotifyToken();
+    if(!token)return null;
+    const headers={'Authorization':`Bearer ${token}`};
+    const searchRes=await fetch(`https://api.spotify.com/v1/search?q=track:${encodeURIComponent(song)}%20artist:${encodeURIComponent(artist)}&type=track&limit=1`,{headers});
+    const searchData=await searchRes.json();
+    const tracks=searchData?.tracks?.items;
+    if(!tracks?.length)return null;
+    const trackId=tracks[0].id;
+    const featRes=await fetch(`https://api.spotify.com/v1/audio-features/${trackId}`,{headers});
+    const f=await featRes.json();
+    if(!f)return null;
+    return{
+      bpm:Math.round(f.tempo),
+      energy:f.energy>0.8?'extremely high energy':f.energy>0.6?'high energy':f.energy>0.4?'moderate energy':'low energy',
+      mood:f.valence>0.7?'very happy and uplifting':f.valence>0.5?'positive':f.valence<0.3?'melancholic and dark':'neutral mood',
+      acoustic:f.acousticness>0.7?'highly acoustic':f.acousticness>0.3?'slightly acoustic':'fully electronic/electric',
+      groove:f.danceability>0.7?'very danceable and groovy':f.danceability>0.4?'moderately groovy':'not groove focused',
+      loudness:`${f.loudness.toFixed(1)} dB`
+    };
+  }catch(e){return null;}
+}
+
+async function getSpotifyArtistStyle(artist){
+  try{
+    const token=await getSpotifyToken();
+    if(!token)return null;
+    const headers={'Authorization':`Bearer ${token}`};
+    const searchRes=await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(artist)}&type=artist&limit=1`,{headers});
+    const data=await searchRes.json();
+    const artists=data?.artists?.items;
+    if(!artists?.length)return null;
+    return{genres:artists[0].genres?.slice(0,6)||[],name:artists[0].name};
+  }catch(e){return null;}
+}
+
+async function getLastFm(artist,song){
+  try{
+    const key=getKey('lastfm');
+    if(!key)return{tags:[],similar:[]};
+    const base='https://ws.audioscrobbler.com/2.0/';
+    if(song){
+      const res=await fetch(`${base}?method=track.getInfo&artist=${encodeURIComponent(artist)}&track=${encodeURIComponent(song)}&api_key=${key}&format=json`);
+      const data=await res.json();
+      const tags=data?.track?.toptags?.tag?.slice(0,8).map(t=>t.name)||[];
+      return{tags};
+    }
+    const[tagsRes,simRes]=await Promise.all([
+      fetch(`${base}?method=artist.gettoptags&artist=${encodeURIComponent(artist)}&api_key=${key}&format=json`),
+      fetch(`${base}?method=artist.getsimilar&artist=${encodeURIComponent(artist)}&api_key=${key}&format=json&limit=5`)
+    ]);
+    const tagsData=await tagsRes.json();
+    const simData=await simRes.json();
+    const tags=tagsData?.toptags?.tag?.slice(0,8).map(t=>t.name)||[];
+    const similar=simData?.similarartists?.artist?.slice(0,5).map(a=>a.name)||[];
+    return{tags,similar};
+  }catch(e){return{tags:[],similar:[]};}
+}
+
+async function fetchArtistData(artistName,song=''){
+  const[spotifyGenres,lastfmData]=await Promise.all([
+    getSpotifyArtistStyle(artistName),
+    getLastFm(artistName,song)
+  ]);
+  let spotifyFeatures=null;
+  if(song)spotifyFeatures=await getSpotifyFeatures(artistName,song);
+  return{spotifyGenres,lastfmData,spotifyFeatures};
+}
+
+function buildArtistContext(artistName,data,index){
+  let ctx=`\nARTIST ${index}: ${artistName}\n`;
   if(data.spotifyFeatures){
-    const f = data.spotifyFeatures;
-    ctx += `Spotify Audio Data: BPM=${f.bpm}, Energy=${f.energy}, Mood=${f.mood}, Acoustic=${f.acoustic}, Groove=${f.groove}, Loudness=${f.loudness}\n`;
+    const f=data.spotifyFeatures;
+    ctx+=`Spotify Audio Data: BPM=${f.bpm}, Energy=${f.energy}, Mood=${f.mood}, Acoustic=${f.acoustic}, Groove=${f.groove}, Loudness=${f.loudness}\n`;
   }
-  if(data.spotifyGenres?.genres?.length) ctx += `Spotify Genres: ${data.spotifyGenres.genres.join(', ')}\n`;
-  if(data.lastfmData?.tags?.length) ctx += `Last.fm Tags: ${data.lastfmData.tags.join(', ')}\n`;
-  if(data.lastfmData?.similar?.length) ctx += `Similar Artists: ${data.lastfmData.similar.join(', ')}\n`;
+  if(data.spotifyGenres?.genres?.length)ctx+=`Spotify Genres: ${data.spotifyGenres.genres.join(', ')}\n`;
+  if(data.lastfmData?.tags?.length)ctx+=`Last.fm Tags: ${data.lastfmData.tags.join(', ')}\n`;
+  if(data.lastfmData?.similar?.length)ctx+=`Similar Artists: ${data.lastfmData.similar.join(', ')}\n`;
   return ctx;
+}
+
+async function groqCall(messages){
+  const key=getKey('groq');
+  if(!key)throw new Error('No Groq API key');
+  const res=await fetch(GROQ_URL,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${key}`},body:JSON.stringify({model:GROQ_MODEL,messages,max_tokens:1000,temperature:0.7})});
+  if(!res.ok){const err=await res.json();throw new Error(err?.error?.message||`API error ${res.status}`);}
+  const data=await res.json();
+  return data.choices[0].message.content.trim();
 }
 
 async function generate(){
   const artist=document.getElementById('artist').value.trim();
   const song=document.getElementById('song').value.trim();
+  const soundDesc=document.getElementById('sound-desc').value.trim();
   const mood=getSelected('mood-group');
+
   if(!getKey('groq')){setStatus('⚠ Paste your Groq API key first',true);return;}
-  if(!artist){setStatus('⚠ Enter an artist name first',true);return;}
+  if(!artist&&!soundDesc){setStatus('⚠ Enter an artist or describe your sound first',true);return;}
+
   document.getElementById('generate-btn').disabled=true;
   document.getElementById('output').innerHTML='';
 
   const blendSeps=[' meets ',' and ',' x ',' + '];
-  let artists=[artist];
-  for(const sep of blendSeps){
-    if(artist.toLowerCase().includes(sep.toLowerCase())){
-      const idx=artist.toLowerCase().indexOf(sep.toLowerCase());
-      artists=[artist.slice(0,idx).trim(),artist.slice(idx+sep.length).trim()];
-      break;
+  let artists=artist?[artist]:[];
+  if(artist){
+    for(const sep of blendSeps){
+      if(artist.toLowerCase().includes(sep.toLowerCase())){
+        const idx=artist.toLowerCase().indexOf(sep.toLowerCase());
+        artists=[artist.slice(0,idx).trim(),artist.slice(idx+sep.length).trim()];
+        break;
+      }
     }
   }
 
-  const isBlend = artists.length > 1;
-  setStatus(isBlend ? '✦ Fetching data for both artists...' : '✦ Fetching Spotify data...');
+  const isBlend=artists.length>1;
+  const hasArtist=artists.length>0;
 
-  let context = `Input: ${artist}\n`;
-  if(song) context += `Song reference: ${song}\n`;
-  if(mood) context += `User mood preference: ${mood}\n`;
+  setStatus(isBlend?'✦ Fetching data for both artists...':hasArtist?'✦ Fetching Spotify data...':'✦ Generating from your description...');
+
+  let context='';
+  if(soundDesc)context+=`\nCREATIVE BRIEF — this is the sonic vision, treat it as the primary creative direction:\n"${soundDesc}"\n`;
+  if(song)context+=`\nSong reference: ${song}\n`;
+  if(mood)context+=`\nMood preference: ${mood}\n`;
+
+  let spotifyDisplayData=null;
 
   try{
-    if(isBlend){
-      const [data1, data2] = await Promise.all([
-        fetchArtistData(artists[0], song),
-        fetchArtistData(artists[1], '')
-      ]);
-      context += buildArtistContext(artists[0], data1, 1);
-      context += buildArtistContext(artists[1], data2, 2);
-      context += `\nBLEND INSTRUCTION: These two artists have distinct sounds that should COLLIDE not blend smoothly. Describe the contrast — quiet intimate elements from one artist exploding into heavy powerful elements from the other. The tension between them is what makes this interesting.\n`;
-    } else {
-      const data = await fetchArtistData(artists[0], song);
-      context += buildArtistContext(artists[0], data, 1);
+    if(hasArtist){
+      if(isBlend){
+        const[data1,data2]=await Promise.all([
+          fetchArtistData(artists[0],song),
+          fetchArtistData(artists[1],'')
+        ]);
+        context+=buildArtistContext(artists[0],data1,1);
+        context+=buildArtistContext(artists[1],data2,2);
+        context+=`\nBLEND INSTRUCTION: These two artists have distinct sounds that should COLLIDE not blend smoothly. The tension between them is the point. Highlight contrast — quiet intimate elements from one exploding into heavy powerful elements from the other.\n`;
+        if(soundDesc)context+=`\nThe creative brief above describes exactly how this collision should feel — use it as your guide.\n`;
+      }else{
+        const data=await fetchArtistData(artists[0],song);
+        context+=buildArtistContext(artists[0],data,1);
+        spotifyDisplayData=data.spotifyFeatures;
+      }
     }
   }catch(e){}
 
   setStatus('✦ Generating your Suno prompt...');
 
   try{
-    const systemPrompt = `You are an expert music analyst and Suno AI prompt engineer.
-Using the artist data provided, generate TWO versions of a Suno prompt.
+    const systemPrompt=`You are an expert music analyst and Suno AI prompt engineer.
+Generate TWO versions of a Suno prompt based on the context provided.
 
-VERSION 1 - FULL: Detailed prompt covering genre, BPM, instruments, vocals, production style, mood, texture, and unique sonic elements. 2-4 sentences.
-${isBlend ? 'For blends: highlight the CONTRAST and COLLISION between the two sounds. Describe how quiet intimate moments explode into heavy powerful sections. Do not average them together — make the tension the feature.' : ''}
+${soundDesc?`CREATIVE BRIEF IS PRIMARY: The user has described their sonic vision as: "${soundDesc}" — this is the most important creative direction. Everything else (Spotify data, genres, mood) supports and enriches this vision, not overrides it.`:''}
+
+VERSION 1 - FULL: Detailed prompt covering genre, BPM, instruments, vocals, production style, mood, texture, and unique sonic elements. 2-4 sentences. ${isBlend?'For blends: highlight the CONTRAST and COLLISION between the two sounds. Describe how quiet intimate moments explode into heavy powerful sections.':''} ${soundDesc?'Make the creative brief the soul of this prompt.':''}
+
 VERSION 2 - SHORT: Under 400 characters. Most important tags and descriptors only, comma separated. Must fit in Suno's style box.
 
-Priority: Spotify audio data → Last.fm tags → mood preference → similar artists for texture only.
+Priority: Creative brief (if provided) → Spotify audio data → Last.fm tags → mood preference
 Be specific with instruments and production techniques.
 IMPORTANT: Never mention any artist names, band names, song titles, or musician names.
 
@@ -227,8 +336,11 @@ SHORT: [short prompt here]`;
 
     clearStatus();
 
-    const artist1Data = isBlend ? await fetchArtistData(artists[0], song) : null;
-    const spotifyHtml = isBlend ? '' : await buildSpotifyBox(artists[0], song);
+    let spotifyHtml='';
+    if(spotifyDisplayData){
+      const d=spotifyDisplayData;
+      spotifyHtml=`<div class="output-box spotify-box"><div class="box-header"><div class="box-title">✦ Spotify Audio Data</div></div><div class="spotify-grid"><div class="spotify-item"><div class="spotify-item-label">BPM</div><div class="spotify-item-value">${d.bpm}</div></div><div class="spotify-item"><div class="spotify-item-label">Energy</div><div class="spotify-item-value">${d.energy}</div></div><div class="spotify-item"><div class="spotify-item-label">Mood</div><div class="spotify-item-value">${d.mood}</div></div><div class="spotify-item"><div class="spotify-item-label">Acoustic</div><div class="spotify-item-value">${d.acoustic}</div></div><div class="spotify-item"><div class="spotify-item-label">Groove</div><div class="spotify-item-value">${d.groove}</div></div><div class="spotify-item"><div class="spotify-item-label">Loudness</div><div class="spotify-item-value">${d.loudness}</div></div></div></div>`;
+    }
 
     document.getElementById('output').innerHTML=`
       <div class="output-box full-box"><div class="box-header"><div class="box-title">✦ Full Prompt</div><button class="copy-btn" id="copy-full">Copy</button></div><div class="prompt-text">${full.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div></div>
@@ -237,17 +349,9 @@ SHORT: [short prompt here]`;
 
     document.getElementById('copy-full').addEventListener('click',function(){copyText(full,this);});
     document.getElementById('copy-short').addEventListener('click',function(){copyText(short,this);});
+
   }catch(e){setStatus('⚠ '+e.message,true);}
   document.getElementById('generate-btn').disabled=false;
-}
-
-async function buildSpotifyBox(artist, song){
-  try{
-    if(!song) return '';
-    const data = await getSpotifyFeatures(artist, song);
-    if(!data) return '';
-    return `<div class="output-box spotify-box"><div class="box-header"><div class="box-title">✦ Spotify Audio Data</div></div><div class="spotify-grid"><div class="spotify-item"><div class="spotify-item-label">BPM</div><div class="spotify-item-value">${data.bpm}</div></div><div class="spotify-item"><div class="spotify-item-label">Energy</div><div class="spotify-item-value">${data.energy}</div></div><div class="spotify-item"><div class="spotify-item-label">Mood</div><div class="spotify-item-value">${data.mood}</div></div><div class="spotify-item"><div class="spotify-item-label">Acoustic</div><div class="spotify-item-value">${data.acoustic}</div></div><div class="spotify-item"><div class="spotify-item-label">Groove</div><div class="spotify-item-value">${data.groove}</div></div><div class="spotify-item"><div class="spotify-item-label">Loudness</div><div class="spotify-item-value">${data.loudness}</div></div></div></div>`;
-  }catch(e){return '';}
 }
 </script>
 </body>
