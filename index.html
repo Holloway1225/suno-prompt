@@ -11,7 +11,7 @@
   :root{
     --bg:#07090c;--panel:#0d1116;--panel-2:#11161d;--line:#1d2630;
     --cyan:#39e6e0;--cyan-dim:#1b8c89;--red:#ff3b4e;
-    --amber:#e6a939;--green:#39e67a;
+    --amber:#e6a939;--green:#39e67a;--purple:#b07fff;
     --text:#cdd6df;--muted:#6b7986;--white:#f4f8fb;
   }
   *{box-sizing:border-box;margin:0;padding:0}
@@ -61,16 +61,27 @@
   .out.sound{border-left:3px solid var(--cyan);}
   .out.short{border-left:3px solid var(--green);}
   .out.lyrics{border-left:3px solid var(--amber);}
+  .out.title-block{border-left:3px solid var(--purple);}
   @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
   .out-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;}
   .out-title{font-family:'Major Mono Display',monospace;font-size:13px;letter-spacing:.04em;text-transform:lowercase;}
   .out.sound .out-title{color:var(--cyan);}
   .out.short .out-title{color:var(--green);}
   .out.lyrics .out-title{color:var(--amber);}
+  .out.title-block .out-title{color:var(--purple);}
   .out-count{font-size:10px;color:var(--muted);letter-spacing:.08em;}
   .out-count.over{color:var(--red);}
   .out-body{font-size:13.5px;line-height:1.75;color:var(--text);white-space:pre-wrap;word-break:break-word;}
   .out.short .out-body{font-family:'Space Mono',monospace;font-size:13px;color:#bdf0d6;}
+  .out.title-block .out-body{font-family:'Major Mono Display',monospace;font-size:15px;color:var(--white);letter-spacing:.04em;}
+
+  /* title pills — individual suggested titles */
+  .title-pills{display:flex;flex-direction:column;gap:10px;}
+  .title-pill{display:flex;justify-content:space-between;align-items:center;gap:12px;background:#0a0c10;border:1px solid var(--line);border-radius:8px;padding:11px 14px;transition:border-color .15s;}
+  .title-pill:hover{border-color:rgba(176,127,255,0.4);}
+  .title-pill-text{font-family:'Major Mono Display',monospace;font-size:14px;color:var(--white);letter-spacing:.03em;}
+  .title-pill-note{font-size:10.5px;color:var(--muted);margin-top:3px;font-family:'Space Mono',monospace;}
+
   .copy{background:transparent;border:1px solid var(--line);color:var(--muted);font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;padding:8px 14px;border-radius:7px;cursor:pointer;transition:.15s;white-space:nowrap;}
   .copy:hover{border-color:var(--cyan-dim);color:var(--cyan);}
   .copy.copied{border-color:var(--green);color:var(--green);}
@@ -108,8 +119,8 @@
   <header>
     <div class="kicker">Cryptid Static · Signal Tools</div>
     <h1><span class="glitch" data-t="SUNO PROMPT">SUNO PROMPT</span></h1>
-    <p class="sub">Paste finished lyrics → <b>sound prompt + Suno-ready lyrics</b>, both copyable.</p>
-    <div class="ver">v2.0</div>
+    <p class="sub">Paste finished lyrics → <b>title suggestions + sound prompt + Suno-ready lyrics</b>, all copyable.</p>
+    <div class="ver">v2.1</div>
   </header>
 
   <div class="card">
@@ -157,7 +168,8 @@
   <details class="crit">
     <summary>How it works</summary>
     <div class="crit-body">
-      Paste finished lyrics. The engine reads them — theme, emotional arc, density, structure — and builds three things:<br><br>
+      Paste finished lyrics. The engine reads them — theme, emotional arc, density, structure — and builds four things:<br><br>
+      <b>Title Suggestions</b> — 3 title options pulled from the lyric's actual language and core image, with a one-line note on what each one does.<br><br>
       <b>Sound Prompt (full)</b> — a rich production brief: genre, BPM feel, instruments, vocal style, dynamics, texture. <b>No band or artist names ever.</b><br><br>
       <b>Short Prompt</b> — under 1000 characters, comma-tagged, drops straight into Suno's style box.<br><br>
       <b>Suno-Ready Lyrics</b> — your lyrics cleaned for Suno: consistent section tags, optional vocal cues ([whisper], [screamed], [breakdown]) where the lyric implies them, nothing reworded.<br><br>
@@ -307,7 +319,9 @@ ABSOLUTE RULE: NEVER mention any real artist, band, musician, producer, or song 
 
 ${vibe?`SOUND STEER from the writer (honor this, let the lyrics fill in the rest): "${vibe}"`:'No sound steer given — derive the sonic world entirely from what the lyrics imply.'}
 
-Produce THREE things:
+Produce FOUR things:
+
+0. TITLE_SUGGESTIONS — exactly 3 title options. Each title must be pulled from the actual language, imagery, or core emotional image inside these specific lyrics — not generic song title patterns. For each, provide a one-line note explaining what it does and why it earns it from the lyric. Format as a JSON array of objects with "title" and "note" keys.
 
 1. SOUND_FULL — a rich production brief, 3-5 sentences. Cover: genre/subgenre blend, BPM or tempo feel, key instruments and their treatment, vocal style(s) and where they shift (clean/screamed/whispered/spoken), production texture (glitch, tape, reverb, distortion, etc.), and the dynamic arc (where it's spacious vs where it collapses into density). Ground every choice in something the lyrics actually do.
 
@@ -323,6 +337,11 @@ ${lyrics}
 Respond ONLY with a valid JSON object. No markdown fences, no commentary. Start with { and end with }.
 
 {
+  "title_suggestions": [
+    {"title": "FILL", "note": "FILL: one sentence on why this title earns it from the lyric"},
+    {"title": "FILL", "note": "FILL"},
+    {"title": "FILL", "note": "FILL"}
+  ],
   "sound_full": "FILL: 3-5 sentence production brief, no band names",
   "sound_short": "FILL: under 1000 chars, comma-separated tags, no band names",
   "lyrics_suno": "FILL: the full lyrics with normalized section tags and sparing performance cues, words unchanged, real newlines"
@@ -331,7 +350,7 @@ Respond ONLY with a valid JSON object. No markdown fences, no commentary. Start 
 
 function parseOut(text){
   const d=JSON.parse(extractJSON(text));
-  if(typeof d.sound_full!=='string'||typeof d.sound_short!=='string'||typeof d.lyrics_suno!=='string')throw new Error('Incomplete response — try again.');
+  if(!Array.isArray(d.title_suggestions)||typeof d.sound_full!=='string'||typeof d.sound_short!=='string'||typeof d.lyrics_suno!=='string')throw new Error('Incomplete response — try again.');
   // hard-trim short prompt to 1000 just in case
   if(d.sound_short.length>1000)d.sound_short=d.sound_short.slice(0,1000).replace(/,[^,]*$/,'');
   return d;
@@ -373,6 +392,35 @@ function copyBtn(el,text){
 
 function renderOut(out,model){
   const box=$('results');box.innerHTML='';
+
+  // ── Title Suggestions block ──
+  if(out.title_suggestions&&out.title_suggestions.length){
+    const titles=out.title_suggestions;
+    const el=document.createElement('div');el.className='out title-block';el.style.animationDelay='0s';
+
+    const allTitles=titles.map(t=>t.title).join('\n');
+    el.innerHTML=`<div class="out-head">
+      <div class="out-title">suggested titles</div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <span class="out-count">via ${esc(model)}</span>
+        <button class="copy" id="copyAllTitles">Copy all</button>
+      </div>
+    </div>
+    <div class="title-pills"></div>`;
+
+    const pills=el.querySelector('.title-pills');
+    titles.forEach(t=>{
+      const pill=document.createElement('div');pill.className='title-pill';
+      pill.innerHTML=`<div><div class="title-pill-text">${esc(t.title)}</div><div class="title-pill-note">${esc(t.note)}</div></div>
+        <button class="copy">Copy</button>`;
+      copyBtn(pill.querySelector('.copy'),t.title);
+      pills.appendChild(pill);
+    });
+
+    copyBtn(el.querySelector('#copyAllTitles'),allTitles);
+    box.appendChild(el);
+  }
+
   const shortLen=out.sound_short.length;
   const blocks=[
     {cls:'sound',title:'sound prompt — full',body:out.sound_full,count:null},
@@ -380,7 +428,7 @@ function renderOut(out,model){
     {cls:'lyrics',title:'suno-ready lyrics',body:out.lyrics_suno,count:null}
   ];
   blocks.forEach((b,i)=>{
-    const el=document.createElement('div');el.className='out '+b.cls;el.style.animationDelay=(i*0.07)+'s';
+    const el=document.createElement('div');el.className='out '+b.cls;el.style.animationDelay=((i+1)*0.07)+'s';
     const countHtml=b.count!==null?`<span class="out-count ${b.count>1000?'over':''}">${b.count}/1000</span>`:`<span class="out-count">via ${esc(model)}</span>`;
     el.innerHTML=`<div class="out-head"><div class="out-title">${b.title}</div><div style="display:flex;gap:10px;align-items:center">${countHtml}<button class="copy">Copy</button></div></div><div class="out-body">${esc(b.body)}</div>`;
     copyBtn(el.querySelector('.copy'),b.body);
