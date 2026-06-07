@@ -12,6 +12,7 @@
     --bg:#07090c;--panel:#0d1116;--panel-2:#11161d;--line:#1d2630;
     --cyan:#39e6e0;--cyan-dim:#1b8c89;--red:#ff3b4e;
     --amber:#e6a939;--green:#39e67a;--purple:#b07fff;
+    --magenta:#ff39b0;--magenta-dim:#8c1b61;
     --text:#cdd6df;--muted:#6b7986;--white:#f4f8fb;
   }
   *{box-sizing:border-box;margin:0;padding:0}
@@ -32,8 +33,19 @@
   .sub b{color:var(--text);font-weight:700;}
   .ver{display:inline-block;margin-top:12px;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--cyan);border:1px solid var(--cyan-dim);background:rgba(57,230,224,0.07);border-radius:5px;padding:3px 9px;}
 
+  /* ── tab nav ── */
+  .tab-nav{display:flex;gap:0;margin-top:24px;border:1px solid var(--line);border-radius:12px;overflow:hidden;}
+  .tab-btn{flex:1;background:transparent;border:none;color:var(--muted);font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;padding:13px 8px;cursor:pointer;transition:.15s;border-right:1px solid var(--line);}
+  .tab-btn:last-child{border-right:none;}
+  .tab-btn:hover{color:var(--text);background:rgba(255,255,255,0.03);}
+  .tab-btn.active{color:var(--cyan);background:rgba(57,230,224,0.07);}
+  .tab-btn.active.fusion{color:var(--magenta);background:rgba(255,57,176,0.07);}
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block;}
+
   .card{background:linear-gradient(180deg,var(--panel),var(--panel-2));border:1px solid var(--line);border-radius:14px;padding:18px;margin-top:20px;position:relative;}
   .card::before{content:"";position:absolute;top:0;left:18px;right:18px;height:1px;background:linear-gradient(90deg,transparent,var(--cyan-dim),transparent);opacity:.5;}
+  .card.fusion-card::before{background:linear-gradient(90deg,transparent,var(--magenta-dim),transparent);}
   label{display:block;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
   textarea{width:100%;min-height:230px;resize:vertical;background:#05070a;border:1px solid var(--line);border-radius:10px;color:var(--text);font-family:'Space Mono',monospace;font-size:14px;line-height:1.7;padding:14px;outline:none;transition:border-color .2s;}
   textarea:focus{border-color:var(--cyan-dim);box-shadow:0 0 0 1px var(--cyan-dim);}
@@ -41,6 +53,7 @@
   .in{background:#05070a;border:1px solid var(--line);border-radius:10px;color:var(--text);font-family:'Space Mono',monospace;font-size:13px;padding:11px 12px;outline:none;width:100%;}
   .in:focus{border-color:var(--cyan-dim);}
   .in::placeholder{color:#3a4651;}
+  .in.fusion-focus:focus{border-color:var(--magenta-dim);box-shadow:0 0 0 1px var(--magenta-dim);}
   .charrow{display:flex;justify-content:space-between;margin-top:6px;font-size:10.5px;color:var(--muted);letter-spacing:.05em;}
   .field{margin-top:14px;}
   .field-hint{font-size:11px;color:var(--muted);line-height:1.5;margin-bottom:8px;}
@@ -50,11 +63,36 @@
   select{width:100%;background:#05070a;border:1px solid var(--line);border-radius:8px;color:var(--text);font-family:'Space Mono',monospace;font-size:12.5px;padding:10px;outline:none;cursor:pointer;}
   select:focus{border-color:var(--cyan-dim);}
 
+  /* ── fusion band inputs ── */
+  .fusion-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:0;}
+  @media(max-width:520px){.fusion-row{grid-template-columns:1fr;}}
+  .fusion-band{background:#05070a;border:1px solid var(--line);border-radius:12px;padding:14px;position:relative;}
+  .fusion-band::before{content:"";position:absolute;top:0;left:14px;right:14px;height:1px;opacity:.4;}
+  .fusion-band.band-a::before{background:linear-gradient(90deg,transparent,var(--cyan),transparent);}
+  .fusion-band.band-b::before{background:linear-gradient(90deg,transparent,var(--magenta),transparent);}
+  .band-label{font-size:10px;letter-spacing:.25em;text-transform:uppercase;margin-bottom:10px;font-weight:700;}
+  .band-a .band-label{color:var(--cyan);}
+  .band-b .band-label{color:var(--magenta);}
+  .band-in{width:100%;background:#07090c;border:1px solid var(--line);border-radius:8px;color:var(--text);font-family:'Space Mono',monospace;font-size:13px;padding:10px 11px;outline:none;margin-bottom:8px;transition:border-color .15s;}
+  .band-in::placeholder{color:#3a4651;}
+  .band-in:last-child{margin-bottom:0;}
+  .band-a .band-in:focus{border-color:var(--cyan-dim);box-shadow:0 0 0 1px rgba(57,230,224,0.2);}
+  .band-b .band-in:focus{border-color:var(--magenta-dim);box-shadow:0 0 0 1px rgba(255,57,176,0.2);}
+  .song-label{font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px;margin-top:10px;}
+
+  .vs-divider{display:flex;align-items:center;justify-content:center;font-family:'Major Mono Display',monospace;font-size:22px;color:var(--red);text-shadow:0 0 12px rgba(255,59,78,0.5);padding:8px 0 0;grid-column:1/-1;}
+  @media(max-width:520px){.vs-divider{padding:0;}}
+
+  .fusion-opts{margin-top:14px;}
+
   button.go{width:100%;margin-top:16px;padding:15px;border:none;border-radius:10px;cursor:pointer;font-family:'Space Mono',monospace;font-weight:700;font-size:14px;letter-spacing:.18em;text-transform:uppercase;color:#04201f;background:linear-gradient(90deg,var(--cyan),#7ff5f0);transition:transform .12s, box-shadow .2s, opacity .2s;box-shadow:0 0 24px rgba(57,230,224,0.25);}
   button.go:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 0 34px rgba(57,230,224,0.45);}
   button.go:disabled{opacity:.5;cursor:not-allowed;}
+  button.go.fusion-go{color:#1a0010;background:linear-gradient(90deg,var(--magenta),#ff8dd8);box-shadow:0 0 24px rgba(255,57,176,0.25);}
+  button.go.fusion-go:hover:not(:disabled){box-shadow:0 0 34px rgba(255,57,176,0.5);}
   .status{text-align:center;color:var(--cyan);font-size:12px;letter-spacing:.2em;margin-top:18px;min-height:18px;text-transform:uppercase;}
   .status.err{color:var(--red);}
+  .status.magenta{color:var(--magenta);}
 
   .results{margin-top:8px;}
   .out{background:linear-gradient(180deg,var(--panel),#0a0e13);border:1px solid var(--line);border-radius:12px;padding:18px;margin-top:14px;animation:rise .5s ease both;}
@@ -62,6 +100,8 @@
   .out.short{border-left:3px solid var(--green);}
   .out.lyrics{border-left:3px solid var(--amber);}
   .out.title-block{border-left:3px solid var(--purple);}
+  .out.fusion-blend{border-left:3px solid var(--magenta);border-top:1px solid rgba(255,57,176,0.2);}
+  .out.fusion-full{border-left:3px solid rgba(255,57,176,0.5);}
   @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
   .out-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;}
   .out-title{font-family:'Major Mono Display',monospace;font-size:13px;letter-spacing:.04em;text-transform:lowercase;}
@@ -69,13 +109,23 @@
   .out.short .out-title{color:var(--green);}
   .out.lyrics .out-title{color:var(--amber);}
   .out.title-block .out-title{color:var(--purple);}
+  .out.fusion-blend .out-title{color:var(--magenta);}
+  .out.fusion-full .out-title{color:rgba(255,57,176,0.7);}
   .out-count{font-size:10px;color:var(--muted);letter-spacing:.08em;}
   .out-count.over{color:var(--red);}
   .out-body{font-size:13.5px;line-height:1.75;color:var(--text);white-space:pre-wrap;word-break:break-word;}
   .out.short .out-body{font-family:'Space Mono',monospace;font-size:13px;color:#bdf0d6;}
+  .out.fusion-blend .out-body{font-family:'Space Mono',monospace;font-size:13px;color:#ffb8e6;}
   .out.title-block .out-body{font-family:'Major Mono Display',monospace;font-size:15px;color:var(--white);letter-spacing:.04em;}
 
-  /* title pills — individual suggested titles */
+  /* fusion signal bar */
+  .fusion-signal{display:flex;align-items:center;gap:10px;margin-bottom:14px;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);}
+  .sig-a{color:var(--cyan);font-weight:700;}
+  .sig-b{color:var(--magenta);font-weight:700;}
+  .sig-cross{color:var(--red);}
+  .sig-line{flex:1;height:1px;background:linear-gradient(90deg,var(--cyan-dim),var(--magenta-dim));opacity:.4;}
+
+  /* title pills */
   .title-pills{display:flex;flex-direction:column;gap:10px;}
   .title-pill{display:flex;justify-content:space-between;align-items:center;gap:12px;background:#0a0c10;border:1px solid var(--line);border-radius:8px;padding:11px 14px;transition:border-color .15s;}
   .title-pill:hover{border-color:rgba(176,127,255,0.4);}
@@ -93,10 +143,12 @@
   .hist-list{margin-top:10px;}
   .hist-item{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-top:8px;cursor:pointer;transition:.15s;display:flex;justify-content:space-between;align-items:center;gap:10px;}
   .hist-item:hover{border-color:var(--cyan-dim);}
+  .hist-item.fusion-hist:hover{border-color:var(--magenta-dim);}
   .hi-main{min-width:0;}
   .hi-name{font-size:13px;color:var(--white);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .hi-meta{font-size:10.5px;color:var(--muted);letter-spacing:.05em;margin-top:3px;}
   .hi-badge{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--cyan-dim);border:1px solid var(--cyan-dim);border-radius:5px;padding:3px 7px;white-space:nowrap;}
+  .hi-badge.fusion-badge{color:var(--magenta-dim);border-color:var(--magenta-dim);}
   .hi-del{font-size:11px;color:var(--muted);background:transparent;border:none;cursor:pointer;padding:4px 6px;}
   .hi-del:hover{color:var(--red);}
   .hist-empty{font-size:12px;color:var(--muted);text-align:center;padding:16px;opacity:.7;}
@@ -120,45 +172,113 @@
     <div class="kicker">Cryptid Static · Signal Tools</div>
     <h1><span class="glitch" data-t="SUNO PROMPT">SUNO PROMPT</span></h1>
     <p class="sub">Paste finished lyrics → <b>title suggestions + sound prompt + Suno-ready lyrics</b>, all copyable.</p>
-    <div class="ver">v2.1</div>
+    <div class="ver">v2.2</div>
   </header>
 
-  <div class="card">
-    <label for="lyrics">Finished Lyrics</label>
-    <textarea id="lyrics" placeholder="Paste your full finished lyrics — section tags ([Verse], [Chorus], [Bridge]) and all..."></textarea>
-    <div class="charrow"><span id="charCount">0 ch</span><span id="shortcut"></span></div>
-
-    <div class="field">
-      <label for="vibe">Sound steer <span style="color:var(--cyan-dim)">(optional)</span></label>
-      <div class="field-hint">A nudge if you have one — genre, energy, reference feel. Leave blank to let the lyrics decide.</div>
-      <input id="vibe" class="in" type="text" placeholder="e.g. dark glitch nu-metal, screamed + clean, industrial breakdown" />
-    </div>
-
-    <div class="opts-row">
-      <div class="opt-group">
-        <label for="model">Engine</label>
-        <select id="model">
-          <option value="groq" selected>Llama 3.3 70B — fast, free</option>
-          <option value="claude">Claude Sonnet — richest</option>
-          <option value="gemini">Gemini 2.0 Flash</option>
-        </select>
-      </div>
-      <div class="opt-group">
-        <label for="retryCount">Retries on 429</label>
-        <select id="retryCount">
-          <option value="0">None</option>
-          <option value="2" selected>2×</option>
-          <option value="4">4×</option>
-        </select>
-      </div>
-    </div>
-
-    <button class="go" id="goBtn">Build Suno Prompt</button>
-    <div class="status" id="status"></div>
+  <!-- Tab Nav -->
+  <div class="tab-nav">
+    <button class="tab-btn active" data-tab="lyrics-tab">From Lyrics</button>
+    <button class="tab-btn fusion" data-tab="fusion-tab">⚡ Band Fusion</button>
   </div>
 
-  <div class="results" id="results"></div>
+  <!-- ══ TAB: FROM LYRICS ══ -->
+  <div class="tab-panel active" id="lyrics-tab">
+    <div class="card">
+      <label for="lyrics">Finished Lyrics</label>
+      <textarea id="lyrics" placeholder="Paste your full finished lyrics — section tags ([Verse], [Chorus], [Bridge]) and all..."></textarea>
+      <div class="charrow"><span id="charCount">0 ch</span><span id="shortcut"></span></div>
 
+      <div class="field">
+        <label for="vibe">Sound steer <span style="color:var(--cyan-dim)">(optional)</span></label>
+        <div class="field-hint">A nudge if you have one — genre, energy, reference feel. Leave blank to let the lyrics decide.</div>
+        <input id="vibe" class="in" type="text" placeholder="e.g. dark glitch nu-metal, screamed + clean, industrial breakdown" />
+      </div>
+
+      <div class="opts-row">
+        <div class="opt-group">
+          <label for="model">Engine</label>
+          <select id="model">
+            <option value="groq" selected>Llama 3.3 70B — fast, free</option>
+            <option value="claude">Claude Sonnet — richest</option>
+            <option value="gemini">Gemini 2.0 Flash</option>
+          </select>
+        </div>
+        <div class="opt-group">
+          <label for="retryCount">Retries on 429</label>
+          <select id="retryCount">
+            <option value="0">None</option>
+            <option value="2" selected>2×</option>
+            <option value="4">4×</option>
+          </select>
+        </div>
+      </div>
+
+      <button class="go" id="goBtn">Build Suno Prompt</button>
+      <div class="status" id="status"></div>
+    </div>
+
+    <div class="results" id="results"></div>
+  </div>
+
+  <!-- ══ TAB: BAND FUSION ══ -->
+  <div class="tab-panel" id="fusion-tab">
+    <div class="card fusion-card">
+      <label>Band Fusion — blend two artists into one Suno-ready prompt</label>
+      <div class="field-hint" style="margin-bottom:14px;">Enter two bands. Add up to 2 songs each to steer the sound toward a specific era or feel. The engine translates both into pure sonic language — no names in the output, ever.</div>
+
+      <div class="fusion-row">
+        <div class="fusion-band band-a">
+          <div class="band-label">Band A</div>
+          <input class="band-in" id="bandA" type="text" placeholder="Band / artist name" autocomplete="off" />
+          <div class="song-label">Reference songs (optional)</div>
+          <input class="band-in" id="songA1" type="text" placeholder="Song 1" autocomplete="off" />
+          <input class="band-in" id="songA2" type="text" placeholder="Song 2" autocomplete="off" />
+        </div>
+
+        <div class="fusion-band band-b">
+          <div class="band-label">Band B</div>
+          <input class="band-in" id="bandB" type="text" placeholder="Band / artist name" autocomplete="off" />
+          <div class="song-label">Reference songs (optional)</div>
+          <input class="band-in" id="songB1" type="text" placeholder="Song 1" autocomplete="off" />
+          <input class="band-in" id="songB2" type="text" placeholder="Song 2" autocomplete="off" />
+        </div>
+      </div>
+
+      <div class="fusion-opts">
+        <div class="field" style="margin-top:14px;">
+          <label for="fusionNotes">Extra sonic steer <span style="color:var(--magenta-dim)">(optional)</span></label>
+          <div class="field-hint">Any direction beyond the blend — mood, energy, production texture, vocal treatment.</div>
+          <input id="fusionNotes" class="in fusion-focus" type="text" placeholder="e.g. heavier on B's low end, clean vocals only, industrial texture" />
+        </div>
+
+        <div class="opts-row">
+          <div class="opt-group">
+            <label for="fusionModel">Engine</label>
+            <select id="fusionModel">
+              <option value="groq" selected>Llama 3.3 70B — fast, free</option>
+              <option value="claude">Claude Sonnet — richest</option>
+              <option value="gemini">Gemini 2.0 Flash</option>
+            </select>
+          </div>
+          <div class="opt-group">
+            <label for="fusionRetry">Retries on 429</label>
+            <select id="fusionRetry">
+              <option value="0">None</option>
+              <option value="2" selected>2×</option>
+              <option value="4">4×</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <button class="go fusion-go" id="fusionBtn">Fuse the Signal</button>
+      <div class="status" id="fusionStatus"></div>
+    </div>
+
+    <div class="results" id="fusionResults"></div>
+  </div>
+
+  <!-- History (shared) -->
   <div class="hist-bar">
     <span class="h-title">History</span>
     <button class="h-clear" id="h-clear">Clear all</button>
@@ -168,12 +288,9 @@
   <details class="crit">
     <summary>How it works</summary>
     <div class="crit-body">
-      Paste finished lyrics. The engine reads them — theme, emotional arc, density, structure — and builds four things:<br><br>
-      <b>Title Suggestions</b> — 3 title options pulled from the lyric's actual language and core image, with a one-line note on what each one does.<br><br>
-      <b>Sound Prompt (full)</b> — a rich production brief: genre, BPM feel, instruments, vocal style, dynamics, texture. <b>No band or artist names ever.</b><br><br>
-      <b>Short Prompt</b> — under 1000 characters, comma-tagged, drops straight into Suno's style box.<br><br>
-      <b>Suno-Ready Lyrics</b> — your lyrics cleaned for Suno: consistent section tags, optional vocal cues ([whisper], [screamed], [breakdown]) where the lyric implies them, nothing reworded.<br><br>
-      <b>Engine</b> — Llama is fast and free. Claude reads the lyric's nuance deepest. Everything is copyable, and every run is saved to History on this device.
+      <b>From Lyrics</b> — Paste finished lyrics. The engine reads them and builds four things: title suggestions pulled from the lyric's actual language, a full sound production brief, a short Suno-ready style tag (under 1000 chars), and the same lyrics normalized with Suno section tags. <b>No band or artist names ever.</b><br><br>
+      <b>Band Fusion</b> — Enter two bands and up to 2 reference songs each. The engine deep-reads both sonic identities — genre, instrumentation, production technique, vocal style, dynamics, texture — then blends them into a cohesive Suno-ready style prompt under 1000 characters. Songs steer it toward a specific era or sound. An optional extra steer lets you tilt the blend. All output is pure sonic description; no real names appear anywhere.<br><br>
+      <b>Engine</b> — Llama is fast and free. Claude reads the nuance deepest. Everything is copyable, and every run is saved to History on this device.
     </div>
   </details>
 
@@ -194,22 +311,32 @@ const HIST_KEY='cs_suno_history';
 const GROQ_MODELS=['llama-3.3-70b-versatile','llama-3.1-70b-versatile'];
 const GEMINI_MODEL='gemini-2.0-flash';
 const GEMINI_LABEL='Gemini 2.0 Flash';
-const CLAUDE_MODEL='claude-sonnet-4-5-20250929';
-const CLAUDE_LABEL='Claude Sonnet 4.5';
+const CLAUDE_MODEL='claude-sonnet-4-20250514';
+const CLAUDE_LABEL='Claude Sonnet';
 const TIMEOUT_MS=90000;
 const RETRY_DELAY=1500;
 
-let controller=null;
+let controller=null, fusionController=null;
 const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 
 const KEY_FOR={groq:'groq',gemini:'gemini',claude:'anthropic'};
 const LABEL_FOR={groq:'Llama (Groq)',gemini:'Gemini',claude:'Claude'};
 
-// persist keys + engine pref
-['anthropicKey','groqKey','geminiKey','model'].forEach(k=>{
-  const el=$(k);
+// persist keys + engine prefs
+['anthropicKey','groqKey','geminiKey','model','fusionModel'].forEach(k=>{
+  const el=$(k); if(!el) return;
   try{const v=localStorage.getItem('cs_'+k);if(v)el.value=v;}catch(e){}
-  el.addEventListener(k==='model'?'change':'input',()=>{try{localStorage.setItem('cs_'+k,el.value);}catch(e){}});
+  el.addEventListener(k==='model'||k==='fusionModel'?'change':'input',()=>{try{localStorage.setItem('cs_'+k,el.value);}catch(e){}});
+});
+
+// ── tab switching ──
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    $(btn.dataset.tab).classList.add('active');
+  });
 });
 
 $('lyrics').addEventListener('input',()=>{$('charCount').textContent=$('lyrics').value.length.toLocaleString()+' ch';});
@@ -217,7 +344,11 @@ const isMac=/Mac|iPhone|iPad/.test(navigator.platform);
 $('shortcut').textContent=(isMac?'⌘':'Ctrl')+'↵ to build';
 $('lyrics').addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key==='Enter'){e.preventDefault();if(!$('goBtn').disabled)build();}});
 
-function setStatus(t,err){const s=$('status');s.className='status'+(err?' err':'');s.textContent=t||'';}
+function setStatus(t,err,elId='status'){
+  const s=$(elId);
+  s.className='status'+(err?' err':'');
+  s.textContent=t||'';
+}
 
 // ── extract JSON robustly ──
 function extractJSON(raw){
@@ -284,9 +415,9 @@ async function callClaude(key,prompt,signal,retries){
   if(!res.ok){const e=await res.json().catch(()=>({}));throw Object.assign(new Error(e?.error?.message||`HTTP ${res.status}`),{status:res.status});}
   const d=await res.json();return{text:d.content.filter(b=>b.type==='text').map(b=>b.text).join(''),model:CLAUDE_LABEL};
 }
-async function callAPI(keys,prompt,signal,retries){
+async function callAPI(keys,prompt,signal,retries,modelEl='model'){
   const errors=[];
-  const pref=$('model').value;
+  const pref=$(modelEl).value;
   const order=pref==='claude'?['claude','groq','gemini']:pref==='gemini'?['gemini','groq','claude']:['groq','gemini','claude'];
   if(!keys[KEY_FOR[pref]])throw new Error(`You picked ${LABEL_FOR[pref]} but no ${LABEL_FOR[pref]} key is entered below. Add it or switch the Engine dropdown.`);
   let usedFallback=false,prefError='';
@@ -311,7 +442,9 @@ async function callAPI(keys,prompt,signal,retries){
   throw new Error(errors[errors.length-1]||'No API key available for the selected engine.');
 }
 
-// ── prompt ──
+// ══════════════════════════
+//  LYRICS → PROMPT FLOW
+// ══════════════════════════
 function buildPrompt(lyrics,vibe){
   return `You are a music producer and Suno AI prompt engineer for a dark, genre-blending project. You are given FINISHED LYRICS. Read them closely — theme, emotional arc, imagery, density, structure, where it's quiet and where it explodes — and produce a production brief plus a Suno-ready version of the lyrics.
 
@@ -351,7 +484,6 @@ Respond ONLY with a valid JSON object. No markdown fences, no commentary. Start 
 function parseOut(text){
   const d=JSON.parse(extractJSON(text));
   if(!Array.isArray(d.title_suggestions)||typeof d.sound_full!=='string'||typeof d.sound_short!=='string'||typeof d.lyrics_suno!=='string')throw new Error('Incomplete response — try again.');
-  // hard-trim short prompt to 1000 just in case
   if(d.sound_short.length>1000)d.sound_short=d.sound_short.slice(0,1000).replace(/,[^,]*$/,'');
   return d;
 }
@@ -370,11 +502,11 @@ async function build(){
   $('goBtn').disabled=true;$('results').innerHTML='';setStatus('Reading the lyrics, building the signal…');
 
   try{
-    const r=await callAPI(keys,buildPrompt(lyrics,vibe),signal,retries);
+    const r=await callAPI(keys,buildPrompt(lyrics,vibe),signal,retries,'model');
     const out=parseOut(r.text);
     if(r.fellBack)setStatus('⚠ '+r.fellBack,true);else setStatus('');
     renderOut(out,r.model);
-    addHist({id:Date.now(),lyrics,vibe,out,model:r.model});
+    addHist({id:Date.now(),type:'lyrics',lyrics,vibe,out,model:r.model});
   }catch(e){
     if(e.name==='AbortError')setStatus('');
     else setStatus('Failed — '+e.message,true);
@@ -383,6 +515,92 @@ async function build(){
 }
 $('goBtn').addEventListener('click',build);
 
+// ══════════════════════════
+//  BAND FUSION FLOW
+// ══════════════════════════
+function buildFusionPrompt(bandA,songA1,songA2,bandB,songB1,songB2,notes){
+  const songsA=[songA1,songA2].filter(Boolean);
+  const songsB=[songB1,songB2].filter(Boolean);
+  const refA=songsA.length?`Reference songs from ${bandA}: ${songsA.join(', ')}. Use these to anchor the specific era, production approach, and sonic texture you should draw from — not their general discography.`:`No specific reference songs given — draw from ${bandA}'s general sonic identity.`;
+  const refB=songsB.length?`Reference songs from ${bandB}: ${songsB.join(', ')}. Use these to anchor the specific era, production approach, and sonic texture you should draw from — not their general discography.`:`No specific reference songs given — draw from ${bandB}'s general sonic identity.`;
+
+  return `You are a music producer and Suno AI prompt engineer. Your task is to deeply analyze two music artists and blend their sonic identities into a single cohesive Suno-ready style prompt.
+
+ABSOLUTE RULE: NEVER output any real artist, band, musician, producer, or song name anywhere in your response. Translate every sonic reference into its constituent ingredients — genre, instruments, production techniques, vocal styles, BPM/tempo feel, texture, dynamics, mix approach. This is non-negotiable.
+
+ARTIST A: ${bandA}
+${refA}
+
+ARTIST B: ${bandB}
+${refB}
+
+${notes?`EXTRA STEER from the user (honor this within the blend): "${notes}"`:'No extra steer — blend both artists equally unless their sonic identities suggest a natural hierarchy.'}
+
+YOUR TASK:
+1. Internally, deeply analyze each artist's sound — genre blend, instrumentation, vocal approach, production era, texture, dynamic range, tempo feel, arrangement density, any signature production techniques.
+2. If reference songs are given, weight your analysis toward those songs' specific sound, not the artist's full catalog.
+3. Find the genuine intersection: what sonic elements do both share, and what unique elements from each would create the most interesting blend?
+4. Build the fusion.
+
+Produce TWO things:
+
+1. BLEND_FULL — 3-5 sentences describing the sonic fusion as a production brief. Cover: blended genre, tempo/BPM feel, instrumentation, vocal style(s), production texture, dynamic shape. Be specific and concrete. No names of any artist, band, or song.
+
+2. BLEND_SHORT — UNDER 1000 CHARACTERS, hard limit. This is the Suno style box input. Comma-separated tags and descriptors only — genres, instruments, vocal styles, production textures, tempo, mood, energy. Pack it dense and precise. No names. No sentences.
+
+Respond ONLY with a valid JSON object. No markdown fences. No commentary. Start with { and end with }.
+
+{
+  "blend_full": "FILL: 3-5 sentence production brief, no artist names",
+  "blend_short": "FILL: under 1000 chars, comma-separated Suno tags, no artist names"
+}`;
+}
+
+function parseFusionOut(text){
+  const d=JSON.parse(extractJSON(text));
+  if(typeof d.blend_full!=='string'||typeof d.blend_short!=='string')throw new Error('Incomplete response — try again.');
+  if(d.blend_short.length>1000)d.blend_short=d.blend_short.slice(0,1000).replace(/,[^,]*$/,'');
+  return d;
+}
+
+async function buildFusion(){
+  const bandA=$('bandA').value.trim();
+  const bandB=$('bandB').value.trim();
+  if(!bandA||!bandB){setStatus('Enter both bands.',true,'fusionStatus');return;}
+  const songA1=$('songA1').value.trim();
+  const songA2=$('songA2').value.trim();
+  const songB1=$('songB1').value.trim();
+  const songB2=$('songB2').value.trim();
+  const notes=$('fusionNotes').value.trim();
+
+  const keys={groq:$('groqKey').value.trim(),gemini:$('geminiKey').value.trim(),anthropic:$('anthropicKey').value.trim()};
+  if(!keys.groq&&!keys.gemini&&!keys.anthropic){setStatus('Add an API key below.',true,'fusionStatus');return;}
+  const retries=parseInt($('fusionRetry').value,10)||0;
+
+  fusionController=new AbortController();
+  const {signal}=fusionController;
+  $('fusionBtn').disabled=true;
+  $('fusionResults').innerHTML='';
+  setStatus('Analyzing both signals, blending the frequencies…','','fusionStatus');
+  $('fusionStatus').className='status magenta';
+
+  try{
+    const r=await callAPI(keys,buildFusionPrompt(bandA,songA1,songA2,bandB,songB1,songB2,notes),signal,retries,'fusionModel');
+    const out=parseFusionOut(r.text);
+    if(r.fellBack)setStatus('⚠ '+r.fellBack,true,'fusionStatus');else setStatus('','','fusionStatus');
+    renderFusionOut(out,r.model,bandA,bandB);
+    addHist({id:Date.now(),type:'fusion',bandA,songA1,songA2,bandB,songB1,songB2,notes,out,model:r.model});
+  }catch(e){
+    if(e.name==='AbortError')setStatus('','','fusionStatus');
+    else setStatus('Failed — '+e.message,true,'fusionStatus');
+  }
+  $('fusionBtn').disabled=false;fusionController=null;
+}
+$('fusionBtn').addEventListener('click',buildFusion);
+
+// ══════════════════════════
+//  RENDER
+// ══════════════════════════
 function copyBtn(el,text){
   el.addEventListener('click',()=>{
     navigator.clipboard.writeText(text).then(()=>{el.classList.add('copied');el.textContent='Copied ✓';setTimeout(()=>{el.classList.remove('copied');el.textContent='Copy';},1600);})
@@ -393,11 +611,9 @@ function copyBtn(el,text){
 function renderOut(out,model){
   const box=$('results');box.innerHTML='';
 
-  // ── Title Suggestions block ──
   if(out.title_suggestions&&out.title_suggestions.length){
     const titles=out.title_suggestions;
     const el=document.createElement('div');el.className='out title-block';el.style.animationDelay='0s';
-
     const allTitles=titles.map(t=>t.title).join('\n');
     el.innerHTML=`<div class="out-head">
       <div class="out-title">suggested titles</div>
@@ -407,7 +623,6 @@ function renderOut(out,model){
       </div>
     </div>
     <div class="title-pills"></div>`;
-
     const pills=el.querySelector('.title-pills');
     titles.forEach(t=>{
       const pill=document.createElement('div');pill.className='title-pill';
@@ -416,7 +631,6 @@ function renderOut(out,model){
       copyBtn(pill.querySelector('.copy'),t.title);
       pills.appendChild(pill);
     });
-
     copyBtn(el.querySelector('#copyAllTitles'),allTitles);
     box.appendChild(el);
   }
@@ -437,7 +651,32 @@ function renderOut(out,model){
   window.scrollTo({top:box.offsetTop-20,behavior:'smooth'});
 }
 
-// ── history ──
+function renderFusionOut(out,model,bandA,bandB){
+  const box=$('fusionResults');box.innerHTML='';
+
+  // signal bar
+  const bar=document.createElement('div');bar.className='fusion-signal';
+  bar.innerHTML=`<span class="sig-a">${esc(bandA)}</span><div class="sig-line"></div><span class="sig-cross">×</span><div class="sig-line"></div><span class="sig-b">${esc(bandB)}</span>`;
+  box.appendChild(bar);
+
+  const shortLen=out.blend_short.length;
+  const blocks=[
+    {cls:'fusion-full',title:'blend brief — full',body:out.blend_full,count:null},
+    {cls:'fusion-blend',title:'suno fusion prompt',body:out.blend_short,count:shortLen},
+  ];
+  blocks.forEach((b,i)=>{
+    const el=document.createElement('div');el.className='out '+b.cls;el.style.animationDelay=(i*0.1)+'s';
+    const countHtml=b.count!==null?`<span class="out-count ${b.count>1000?'over':''}">${b.count}/1000</span>`:`<span class="out-count">via ${esc(model)}</span>`;
+    el.innerHTML=`<div class="out-head"><div class="out-title">${b.title}</div><div style="display:flex;gap:10px;align-items:center">${countHtml}<button class="copy">Copy</button></div></div><div class="out-body">${esc(b.body)}</div>`;
+    copyBtn(el.querySelector('.copy'),b.body);
+    box.appendChild(el);
+  });
+  window.scrollTo({top:box.offsetTop-20,behavior:'smooth'});
+}
+
+// ══════════════════════════
+//  HISTORY
+// ══════════════════════════
 function loadHist(){try{return JSON.parse(localStorage.getItem(HIST_KEY)||'[]');}catch(e){return[];}}
 function saveHist(a){try{localStorage.setItem(HIST_KEY,JSON.stringify(a.slice(0,60)));}catch(e){}}
 function addHist(e){const a=loadHist();a.unshift(e);saveHist(a);renderHist();}
@@ -447,19 +686,36 @@ function firstLine(lyrics){const m=lyrics.split('\n').find(l=>l.trim()&&!/^\[/.t
 
 function renderHist(){
   const list=$('hist-list');const arr=loadHist();
-  if(!arr.length){list.innerHTML='<div class="hist-empty">No saved prompts yet. Every build is saved here.</div>';return;}
+  if(!arr.length){list.innerHTML='<div class="hist-empty">No saved runs yet. Every build is saved here.</div>';return;}
   list.innerHTML='';
   arr.forEach(e=>{
-    const name=firstLine(e.lyrics).slice(0,42);
-    const item=document.createElement('div');item.className='hist-item';
+    const isFusion=e.type==='fusion';
+    const name=isFusion?`${e.bandA} × ${e.bandB}`:(firstLine(e.lyrics||'').slice(0,42));
+    const item=document.createElement('div');
+    item.className='hist-item'+(isFusion?' fusion-hist':'');
     item.innerHTML=`<div class="hi-main"><div class="hi-name">${esc(name)}</div><div class="hi-meta">${fmtDate(e.id)} · via ${esc(e.model||'')}</div></div>
-      <span class="hi-badge">Prompt</span><button class="hi-del" title="Delete">✕</button>`;
-    item.querySelector('.hi-main').addEventListener('click',()=>{renderOut(e.out,e.model);});
+      <span class="hi-badge ${isFusion?'fusion-badge':''}">${isFusion?'Fusion':'Prompt'}</span><button class="hi-del" title="Delete">✕</button>`;
+    item.querySelector('.hi-main').addEventListener('click',()=>{
+      if(isFusion){
+        // switch to fusion tab and render
+        document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+        document.querySelector('[data-tab="fusion-tab"]').classList.add('active');
+        $('fusion-tab').classList.add('active');
+        renderFusionOut(e.out,e.model,e.bandA,e.bandB);
+      }else{
+        document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+        document.querySelector('[data-tab="lyrics-tab"]').classList.add('active');
+        $('lyrics-tab').classList.add('active');
+        renderOut(e.out,e.model);
+      }
+    });
     item.querySelector('.hi-del').addEventListener('click',ev=>{ev.stopPropagation();delHist(e.id);});
     list.appendChild(item);
   });
 }
-$('h-clear').addEventListener('click',()=>{if(confirm('Clear all saved prompts on this device?')){saveHist([]);renderHist();}});
+$('h-clear').addEventListener('click',()=>{if(confirm('Clear all saved runs on this device?')){saveHist([]);renderHist();}});
 
 renderHist();
 </script>
