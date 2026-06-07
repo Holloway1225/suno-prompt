@@ -172,7 +172,7 @@
     <div class="kicker">Cryptid Static · Signal Tools</div>
     <h1><span class="glitch" data-t="SUNO PROMPT">SUNO PROMPT</span></h1>
     <p class="sub">Paste finished lyrics → <b>title suggestions + sound prompt + Suno-ready lyrics</b>, all copyable.</p>
-    <div class="ver">v2.3</div>
+    <div class="ver">v2.4</div>
   </header>
 
   <!-- Tab Nav -->
@@ -323,10 +323,12 @@ const KEY_FOR={groq:'groq',gemini:'gemini',claude:'anthropic'};
 const LABEL_FOR={groq:'Llama (Groq)',gemini:'Gemini',claude:'Claude'};
 
 // persist keys + engine prefs
+const LS_MAP={anthropicKey:'key_anthropic',groqKey:'key_groq',geminiKey:'key_gemini',model:'cs_model',fusionModel:'cs_fusionModel'};
 ['anthropicKey','groqKey','geminiKey','model','fusionModel'].forEach(k=>{
   const el=$(k); if(!el) return;
-  try{const v=localStorage.getItem('cs_'+k);if(v)el.value=v;}catch(e){}
-  el.addEventListener(k==='model'||k==='fusionModel'?'change':'input',()=>{try{localStorage.setItem('cs_'+k,el.value);}catch(e){}});
+  const lsKey=LS_MAP[k]||('cs_'+k);
+  try{const v=localStorage.getItem(lsKey);if(v)el.value=v;}catch(e){}
+  el.addEventListener(k==='model'||k==='fusionModel'?'change':'input',()=>{try{localStorage.setItem(lsKey,el.value);}catch(e){}});
 });
 
 // ── tab switching ──
