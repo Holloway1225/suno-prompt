@@ -172,7 +172,7 @@
     <div class="kicker">Cryptid Static · Signal Tools</div>
     <h1><span class="glitch" data-t="SUNO PROMPT">SUNO PROMPT</span></h1>
     <p class="sub">Paste finished lyrics → <b>title suggestions + sound prompt + Suno-ready lyrics</b>, all copyable.</p>
-    <div class="ver">v2.2</div>
+    <div class="ver">v2.3</div>
   </header>
 
   <!-- Tab Nav -->
@@ -521,38 +521,62 @@ $('goBtn').addEventListener('click',build);
 function buildFusionPrompt(bandA,songA1,songA2,bandB,songB1,songB2,notes){
   const songsA=[songA1,songA2].filter(Boolean);
   const songsB=[songB1,songB2].filter(Boolean);
-  const refA=songsA.length?`Reference songs from ${bandA}: ${songsA.join(', ')}. Use these to anchor the specific era, production approach, and sonic texture you should draw from — not their general discography.`:`No specific reference songs given — draw from ${bandA}'s general sonic identity.`;
-  const refB=songsB.length?`Reference songs from ${bandB}: ${songsB.join(', ')}. Use these to anchor the specific era, production approach, and sonic texture you should draw from — not their general discography.`:`No specific reference songs given — draw from ${bandB}'s general sonic identity.`;
+  const songLineA=songsA.length?`Reference songs (weight your analysis HERE, not the full catalog): ${songsA.join(' / ')}`:`No songs given — use full catalog, but note their most sonically distinctive period.`;
+  const songLineB=songsB.length?`Reference songs (weight your analysis HERE, not the full catalog): ${songsB.join(' / ')}`:`No songs given — use full catalog, but note their most sonically distinctive period.`;
 
-  return `You are a music producer and Suno AI prompt engineer. Your task is to deeply analyze two music artists and blend their sonic identities into a single cohesive Suno-ready style prompt.
+  return `You are a veteran music producer and recording engineer with encyclopedic knowledge of modern rock, metal, and alternative production. Your task: deeply analyze two specific artists (anchored to specific songs where given) and synthesize their sonic DNA into a single Suno-ready style prompt.
 
-ABSOLUTE RULE: NEVER output any real artist, band, musician, producer, or song name anywhere in your response. Translate every sonic reference into its constituent ingredients — genre, instruments, production techniques, vocal styles, BPM/tempo feel, texture, dynamics, mix approach. This is non-negotiable.
+ABSOLUTE NON-NEGOTIABLE RULE: Zero real names in output — no artists, bands, producers, engineers, song titles, or album names. Every sonic element must be translated into its raw ingredients: specific genres and subgenres, exact instruments and their treatment, production techniques, vocal approaches, BPM/tempo feel, tuning characteristics, mix signatures, dynamic structures. If you would normally name-drop, describe the sound instead.
 
-ARTIST A: ${bandA}
-${refA}
+━━ ARTIST A: ${bandA} ━━
+${songLineA}
 
-ARTIST B: ${bandB}
-${refB}
+Analyze in detail:
+- Exact genre tags (be granular: not just "metal" but which subgenre blend)
+- Guitar: tuning feel, riff style, tone character (tight/loose, dry/wet, djent/chug/melodic)
+- Bass: presence in mix, style, relationship to guitar
+- Drums: kit character, programming feel, snare/kick treatment, tempo range
+- Vocals: range, technique, where they sit clean vs harsh vs falsetto vs chest vs whispered
+- Synths/keys/orchestration: role and density
+- Production signature: compression style, mix width, loudness, wet/dry balance, any signature FX
+- Dynamic architecture: how the song builds, where it explodes, where it breathes
+${songsA.length?`- Specific to ${songsA.join(' / ')}: what makes THESE songs sound the way they do vs the rest of the catalog`:''}
 
-${notes?`EXTRA STEER from the user (honor this within the blend): "${notes}"`:'No extra steer — blend both artists equally unless their sonic identities suggest a natural hierarchy.'}
+━━ ARTIST B: ${bandB} ━━
+${songLineB}
 
-YOUR TASK:
-1. Internally, deeply analyze each artist's sound — genre blend, instrumentation, vocal approach, production era, texture, dynamic range, tempo feel, arrangement density, any signature production techniques.
-2. If reference songs are given, weight your analysis toward those songs' specific sound, not the artist's full catalog.
-3. Find the genuine intersection: what sonic elements do both share, and what unique elements from each would create the most interesting blend?
-4. Build the fusion.
+Analyze in detail:
+- Exact genre tags (granular)
+- Guitar: tuning feel, riff style, tone character
+- Bass: presence in mix, style
+- Drums: kit character, tempo range, feel
+- Vocals: range, technique, clean/harsh/falsetto/chest distribution
+- Synths/keys/orchestration: role and density
+- Production signature: compression, mix width, loudness, wet/dry, signature FX
+- Dynamic architecture: how songs build and release
+${songsB.length?`- Specific to ${songsB.join(' / ')}: what makes THESE songs sound the way they do`:''}
+
+━━ FUSION LOGIC ━━
+1. Identify shared sonic ground — what do both artists already have in common? That's the foundation.
+2. Identify what each uniquely contributes — what does A have that B doesn't, and vice versa?
+3. Determine the blend ratio — which elements are load-bearing for the fusion vs decorative?
+4. Resolve conflicts — if A has harsh screamed vocals and B has falsetto, decide how both coexist (e.g. verse/chorus split, layering, dynamic placement).
+5. Find the production approach that serves both — don't average them, find the setting where both identities are readable.
+${notes?`6. USER STEER (mandatory, honor this): "${notes}"`:''}
+
+━━ OUTPUT ━━
 
 Produce TWO things:
 
-1. BLEND_FULL — 3-5 sentences describing the sonic fusion as a production brief. Cover: blended genre, tempo/BPM feel, instrumentation, vocal style(s), production texture, dynamic shape. Be specific and concrete. No names of any artist, band, or song.
+BLEND_FULL — 4-6 sentences. A specific, technical production brief. Name every key ingredient: exact genre blend, BPM or tempo feel, guitar tuning character and riff approach, drum treatment, bass presence, vocal split (who sings what where), synth/orchestration role, production texture, dynamic shape. No vague words like "atmospheric" without saying what creates it. No band names.
 
-2. BLEND_SHORT — UNDER 1000 CHARACTERS, hard limit. This is the Suno style box input. Comma-separated tags and descriptors only — genres, instruments, vocal styles, production textures, tempo, mood, energy. Pack it dense and precise. No names. No sentences.
+BLEND_SHORT — HARD LIMIT: under 1000 characters. Comma-separated Suno style tags. Dense and precise. Include: subgenres, tempo descriptor, guitar descriptors, vocal descriptors, production textures, dynamic descriptors, mood/energy tags, instrumentation tags. No sentences. No names. Every tag must be a real sonic descriptor that Suno can act on.
 
-Respond ONLY with a valid JSON object. No markdown fences. No commentary. Start with { and end with }.
+Respond ONLY with a valid JSON object. No markdown fences. No commentary. Start with { end with }.
 
 {
-  "blend_full": "FILL: 3-5 sentence production brief, no artist names",
-  "blend_short": "FILL: under 1000 chars, comma-separated Suno tags, no artist names"
+  "blend_full": "FILL",
+  "blend_short": "FILL"
 }`;
 }
 
