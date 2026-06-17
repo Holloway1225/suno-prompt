@@ -13,6 +13,7 @@
     --cyan:#39e6e0;--cyan-dim:#1b8c89;--red:#ff3b4e;
     --amber:#e6a939;--green:#39e67a;--purple:#b07fff;
     --magenta:#ff39b0;--magenta-dim:#8c1b61;
+    --orange:#ff8c39;--orange-dim:#8c4c1b;
     --text:#cdd6df;--muted:#6b7986;--white:#f4f8fb;
   }
   *{box-sizing:border-box;margin:0;padding:0}
@@ -64,26 +65,47 @@
   select:focus{border-color:var(--cyan-dim);}
 
   /* ── fusion band inputs ── */
-  .fusion-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:0;}
-  @media(max-width:520px){.fusion-row{grid-template-columns:1fr;}}
+  .fusion-bands{display:flex;flex-direction:column;gap:14px;margin-top:0;}
   .fusion-band{background:#05070a;border:1px solid var(--line);border-radius:12px;padding:14px;position:relative;}
   .fusion-band::before{content:"";position:absolute;top:0;left:14px;right:14px;height:1px;opacity:.4;}
   .fusion-band.band-a::before{background:linear-gradient(90deg,transparent,var(--cyan),transparent);}
   .fusion-band.band-b::before{background:linear-gradient(90deg,transparent,var(--magenta),transparent);}
-  .band-label{font-size:10px;letter-spacing:.25em;text-transform:uppercase;margin-bottom:10px;font-weight:700;}
+  .fusion-band.band-c::before{background:linear-gradient(90deg,transparent,var(--orange),transparent);}
+  .band-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+  .band-label{font-size:10px;letter-spacing:.25em;text-transform:uppercase;font-weight:700;}
   .band-a .band-label{color:var(--cyan);}
   .band-b .band-label{color:var(--magenta);}
+  .band-c .band-label{color:var(--orange);}
+  .band-pct{font-family:'Major Mono Display',monospace;font-size:16px;letter-spacing:.02em;min-width:54px;text-align:right;}
+  .band-a .band-pct{color:var(--cyan);}
+  .band-b .band-pct{color:var(--magenta);}
+  .band-c .band-pct{color:var(--orange);}
+  .band-pct.locked-zero{opacity:.35;}
   .band-in{width:100%;background:#07090c;border:1px solid var(--line);border-radius:8px;color:var(--text);font-family:'Space Mono',monospace;font-size:13px;padding:10px 11px;outline:none;margin-bottom:8px;transition:border-color .15s;}
   .band-in::placeholder{color:#3a4651;}
   .band-in:last-child{margin-bottom:0;}
   .band-a .band-in:focus{border-color:var(--cyan-dim);box-shadow:0 0 0 1px rgba(57,230,224,0.2);}
   .band-b .band-in:focus{border-color:var(--magenta-dim);box-shadow:0 0 0 1px rgba(255,57,176,0.2);}
+  .band-c .band-in:focus{border-color:var(--orange-dim);box-shadow:0 0 0 1px rgba(255,140,57,0.2);}
   .song-label{font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px;margin-top:10px;}
 
-  .vs-divider{display:flex;align-items:center;justify-content:center;font-family:'Major Mono Display',monospace;font-size:22px;color:var(--red);text-shadow:0 0 12px rgba(255,59,78,0.5);padding:8px 0 0;grid-column:1/-1;}
-  @media(max-width:520px){.vs-divider{padding:0;}}
+  /* weight slider */
+  .weight-row{margin-top:10px;}
+  .weight-row.disabled{opacity:.4;pointer-events:none;}
+  input[type=range].weight{-webkit-appearance:none;appearance:none;width:100%;height:4px;border-radius:3px;background:var(--line);outline:none;cursor:pointer;margin-top:2px;}
+  input[type=range].weight::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:16px;height:16px;border-radius:50%;border:2px solid var(--bg);cursor:pointer;}
+  input[type=range].weight::-moz-range-thumb{width:16px;height:16px;border-radius:50%;border:2px solid var(--bg);cursor:pointer;}
+  .band-a input[type=range].weight::-webkit-slider-thumb{background:var(--cyan);box-shadow:0 0 8px rgba(57,230,224,0.5);}
+  .band-a input[type=range].weight::-moz-range-thumb{background:var(--cyan);}
+  .band-b input[type=range].weight::-webkit-slider-thumb{background:var(--magenta);box-shadow:0 0 8px rgba(255,57,176,0.5);}
+  .band-b input[type=range].weight::-moz-range-thumb{background:var(--magenta);}
+  .band-c input[type=range].weight::-webkit-slider-thumb{background:var(--orange);box-shadow:0 0 8px rgba(255,140,57,0.5);}
+  .band-c input[type=range].weight::-moz-range-thumb{background:var(--orange);}
 
-  .fusion-opts{margin-top:14px;}
+  .weight-total{text-align:center;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-top:12px;}
+  .weight-total b{color:var(--green);}
+
+  .fusion-opts{margin-top:16px;}
 
   button.go{width:100%;margin-top:16px;padding:15px;border:none;border-radius:10px;cursor:pointer;font-family:'Space Mono',monospace;font-weight:700;font-size:14px;letter-spacing:.18em;text-transform:uppercase;color:#04201f;background:linear-gradient(90deg,var(--cyan),#7ff5f0);transition:transform .12s, box-shadow .2s, opacity .2s;box-shadow:0 0 24px rgba(57,230,224,0.25);}
   button.go:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 0 34px rgba(57,230,224,0.45);}
@@ -93,6 +115,7 @@
   .status{text-align:center;color:var(--cyan);font-size:12px;letter-spacing:.2em;margin-top:18px;min-height:18px;text-transform:uppercase;}
   .status.err{color:var(--red);}
   .status.magenta{color:var(--magenta);}
+  .status.warn{color:var(--amber);}
 
   .results{margin-top:8px;}
   .out{background:linear-gradient(180deg,var(--panel),#0a0e13);border:1px solid var(--line);border-radius:12px;padding:18px;margin-top:14px;animation:rise .5s ease both;}
@@ -118,12 +141,16 @@
   .out.fusion-blend .out-body{font-family:'Space Mono',monospace;font-size:13px;color:#ffb8e6;}
   .out.title-block .out-body{font-family:'Major Mono Display',monospace;font-size:15px;color:var(--white);letter-spacing:.04em;}
 
+  .folk-flag{margin-top:14px;border:1px solid var(--amber);background:rgba(230,169,57,0.08);border-radius:10px;padding:12px 14px;font-size:12px;line-height:1.6;color:var(--amber);letter-spacing:.03em;}
+  .folk-flag b{color:#ffce6b;}
+
   /* fusion signal bar */
-  .fusion-signal{display:flex;align-items:center;gap:10px;margin-bottom:14px;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);}
+  .fusion-signal{display:flex;align-items:center;gap:8px;margin-bottom:14px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);flex-wrap:wrap;}
   .sig-a{color:var(--cyan);font-weight:700;}
   .sig-b{color:var(--magenta);font-weight:700;}
+  .sig-c{color:var(--orange);font-weight:700;}
   .sig-cross{color:var(--red);}
-  .sig-line{flex:1;height:1px;background:linear-gradient(90deg,var(--cyan-dim),var(--magenta-dim));opacity:.4;}
+  .sig-line{flex:1;min-width:14px;height:1px;background:linear-gradient(90deg,var(--cyan-dim),var(--magenta-dim));opacity:.4;}
 
   /* title pills */
   .title-pills{display:flex;flex-direction:column;gap:10px;}
@@ -172,7 +199,7 @@
     <div class="kicker">Cryptid Static · Signal Tools</div>
     <h1><span class="glitch" data-t="SUNO PROMPT">SUNO PROMPT</span></h1>
     <p class="sub">Paste finished lyrics → <b>title suggestions + sound prompt + Suno-ready lyrics</b>, all copyable.</p>
-    <div class="ver">v2.5</div>
+    <div class="ver">v2.6</div>
   </header>
 
   <!-- Tab Nav -->
@@ -223,32 +250,60 @@
   <!-- ══ TAB: BAND FUSION ══ -->
   <div class="tab-panel" id="fusion-tab">
     <div class="card fusion-card">
-      <label>Band Fusion — blend two artists into one Suno-ready prompt</label>
-      <div class="field-hint" style="margin-bottom:14px;">Enter two bands. Add up to 2 songs each to steer the sound toward a specific era or feel. The engine translates both into pure sonic language — no names in the output, ever.</div>
+      <label>Band Fusion — blend up to three artists into one Suno-ready prompt</label>
+      <div class="field-hint" style="margin-bottom:14px;">Enter two or three bands and set the blend weight on each. Sliders auto-balance to total 100%. Add up to 2 songs each to steer the sound toward a specific era. The engine translates everything into pure sonic language — no names in the output, ever.</div>
 
-      <div class="fusion-row">
+      <div class="fusion-bands">
         <div class="fusion-band band-a">
-          <div class="band-label">Band A</div>
+          <div class="band-head">
+            <div class="band-label">Band A</div>
+            <div class="band-pct" id="pctA">50%</div>
+          </div>
           <input class="band-in" id="bandA" type="text" placeholder="Band / artist name" autocomplete="off" />
+          <div class="weight-row" id="weightRowA">
+            <input type="range" class="weight" id="weightA" min="0" max="100" value="50" />
+          </div>
           <div class="song-label">Reference songs (optional)</div>
           <input class="band-in" id="songA1" type="text" placeholder="Song 1" autocomplete="off" />
           <input class="band-in" id="songA2" type="text" placeholder="Song 2" autocomplete="off" />
         </div>
 
         <div class="fusion-band band-b">
-          <div class="band-label">Band B</div>
+          <div class="band-head">
+            <div class="band-label">Band B</div>
+            <div class="band-pct" id="pctB">50%</div>
+          </div>
           <input class="band-in" id="bandB" type="text" placeholder="Band / artist name" autocomplete="off" />
+          <div class="weight-row" id="weightRowB">
+            <input type="range" class="weight" id="weightB" min="0" max="100" value="50" />
+          </div>
           <div class="song-label">Reference songs (optional)</div>
           <input class="band-in" id="songB1" type="text" placeholder="Song 1" autocomplete="off" />
           <input class="band-in" id="songB2" type="text" placeholder="Song 2" autocomplete="off" />
         </div>
+
+        <div class="fusion-band band-c">
+          <div class="band-head">
+            <div class="band-label">Band C <span style="color:var(--orange-dim);letter-spacing:.1em;">(optional)</span></div>
+            <div class="band-pct locked-zero" id="pctC">0%</div>
+          </div>
+          <input class="band-in" id="bandC" type="text" placeholder="Band / artist name — leave blank to skip" autocomplete="off" />
+          <div class="weight-row disabled" id="weightRowC">
+            <input type="range" class="weight" id="weightC" min="0" max="100" value="0" />
+          </div>
+          <div class="song-label">Reference songs (optional)</div>
+          <input class="band-in" id="songC1" type="text" placeholder="Song 1" autocomplete="off" />
+          <input class="band-in" id="songC2" type="text" placeholder="Song 2" autocomplete="off" />
+        </div>
       </div>
+
+      <div class="weight-total" id="weightTotal">Total: <b>100%</b></div>
 
       <div class="fusion-opts">
         <div class="field" style="margin-top:14px;">
           <label for="fusionNotes">Extra sonic steer <span style="color:var(--magenta-dim)">(optional)</span></label>
           <div class="field-hint">Any direction beyond the blend — mood, energy, production texture, vocal treatment.</div>
-          <input id="fusionNotes" class="in fusion-focus" type="text" placeholder="e.g. heavier on B's low end, clean vocals only, industrial texture" />
+          <input id="fusionNotes" class="in fusion-focus" type="text" placeholder="e.g. heavier low end, clean vocals only, industrial texture" />
         </div>
 
         <div class="opts-row">
@@ -289,7 +344,8 @@
     <summary>How it works</summary>
     <div class="crit-body">
       <b>From Lyrics</b> — Paste finished lyrics. The engine reads them and builds four things: title suggestions pulled from the lyric's actual language, a full sound production brief, a short Suno-ready style tag (under 1000 chars), and the same lyrics normalized with Suno section tags. <b>No band or artist names ever.</b><br><br>
-      <b>Band Fusion</b> — Enter two bands and up to 2 reference songs each. The engine deep-reads both sonic identities — genre, instrumentation, production technique, vocal style, dynamics, texture — then blends them into a cohesive Suno-ready style prompt under 1000 characters. Songs steer it toward a specific era or sound. An optional extra steer lets you tilt the blend. All output is pure sonic description; no real names appear anywhere.<br><br>
+      <b>Band Fusion</b> — Enter two or three bands and set a blend weight on each (sliders auto-balance to 100%). Add up to 2 reference songs each. The engine deep-reads each sonic identity — genre, instrumentation, production technique, vocal style, dynamics, texture — then blends them by weight into a cohesive Suno-ready style prompt under 1000 characters. The percentages tell it which sound is load-bearing and which is seasoning. All output is pure sonic description; no real names appear anywhere.<br><br>
+      <b>No folk</b> — Both flows hard-exclude folk, acoustic singer-songwriter, Americana, and country, and require a heavy/electronic/electric backbone. A post-check scans the output and flags any folk language that slips through.<br><br>
       <b>Engine</b> — Llama is fast and free. Claude reads the nuance deepest. Everything is copyable, and every run is saved to History on this device.
     </div>
   </details>
@@ -315,6 +371,9 @@ const CLAUDE_MODEL='claude-sonnet-4-6';
 const CLAUDE_LABEL='Claude Sonnet';
 const TIMEOUT_MS=90000;
 const RETRY_DELAY=1500;
+
+// folk language the post-check scans for
+const FOLK_FLAGS=['folk','folk-rock','folk rock','acoustic','singer-songwriter','singer songwriter','americana','country','bluegrass','banjo','mandolin','fiddle','dulcimer','hoedown','campfire','fingerpick','fingerpicked','fingerpicking','washboard','autoharp','barn dance','front porch','hootenanny'];
 
 let controller=null, fusionController=null;
 const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
@@ -348,9 +407,104 @@ $('lyrics').addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key==='E
 
 function setStatus(t,err,elId='status'){
   const s=$(elId);
-  s.className='status'+(err?' err':'');
+  s.className='status'+(err===true?' err':err==='warn'?' warn':'');
   s.textContent=t||'';
 }
+
+// ══════════════════════════
+//  WEIGHT AUTO-BALANCE
+// ══════════════════════════
+// Active bands = those with a non-empty name. Band C only counts when named.
+// When a slider moves, the remainder (100 - moved) is distributed across the
+// OTHER active bands in proportion to their current values.
+const SLIDERS={A:'weightA',B:'weightB',C:'weightC'};
+const PCTS={A:'pctA',B:'pctB',C:'pctC'};
+
+function bandActive(letter){
+  if(letter==='C') return !!$('bandC').value.trim();
+  return true; // A and B always active
+}
+function activeLetters(){return ['A','B','C'].filter(bandActive);}
+
+function readWeights(){
+  const w={};['A','B','C'].forEach(L=>{w[L]=parseInt($(SLIDERS[L]).value,10)||0;});
+  return w;
+}
+
+function renderPcts(w){
+  ['A','B','C'].forEach(L=>{
+    const active=bandActive(L);
+    $(PCTS[L]).textContent=(active?w[L]:0)+'%';
+    $(PCTS[L]).classList.toggle('locked-zero',!active||w[L]===0);
+    $('weightRow'+L).classList.toggle('disabled',!active);
+  });
+  const total=activeLetters().reduce((s,L)=>s+w[L],0);
+  $('weightTotal').innerHTML='Total: <b>'+total+'%</b>';
+  $('weightTotal').querySelector('b').style.color=(total===100?'var(--green)':'var(--red)');
+}
+
+// distribute 100 across active bands keeping `moved` fixed
+function rebalance(movedLetter){
+  const active=activeLetters();
+  const w=readWeights();
+  // zero out inactive
+  ['A','B','C'].forEach(L=>{if(!active.includes(L))w[L]=0;});
+
+  if(movedLetter && active.includes(movedLetter)){
+    const fixed=Math.max(0,Math.min(100,w[movedLetter]));
+    w[movedLetter]=fixed;
+    const others=active.filter(L=>L!==movedLetter);
+    const remain=100-fixed;
+    const otherSum=others.reduce((s,L)=>s+w[L],0);
+    if(others.length){
+      if(otherSum<=0){
+        // split remainder evenly
+        const each=Math.floor(remain/others.length);
+        others.forEach((L,i)=>{w[L]=each;});
+        w[others[others.length-1]]+=remain-each*others.length;
+      }else{
+        let assigned=0;
+        others.forEach((L,i)=>{
+          if(i<others.length-1){const v=Math.round(remain*(w[L]/otherSum));w[L]=v;assigned+=v;}
+          else{w[L]=remain-assigned;}
+        });
+      }
+    }
+  }else{
+    // no specific move (e.g. band toggled) — normalize active to sum 100
+    const sum=active.reduce((s,L)=>s+w[L],0);
+    if(sum<=0){
+      const each=Math.floor(100/active.length);
+      active.forEach(L=>{w[L]=each;});
+      w[active[active.length-1]]+=100-each*active.length;
+    }else if(sum!==100){
+      let assigned=0;
+      active.forEach((L,i)=>{
+        if(i<active.length-1){const v=Math.round(100*(w[L]/sum));w[L]=v;assigned+=v;}
+        else{w[L]=100-assigned;}
+      });
+    }
+  }
+  // write back
+  ['A','B','C'].forEach(L=>{$(SLIDERS[L]).value=w[L];});
+  renderPcts(w);
+}
+
+['A','B','C'].forEach(L=>{
+  $(SLIDERS[L]).addEventListener('input',()=>{if(bandActive(L))rebalance(L);else{$(SLIDERS[L]).value=0;renderPcts(readWeights());}});
+});
+// toggling band C name in/out re-balances
+$('bandC').addEventListener('input',()=>{
+  if(bandActive('C')&&parseInt($('weightC').value,10)===0){
+    // give C a starting share by normalizing evenly
+    const active=activeLetters();
+    const each=Math.floor(100/active.length);
+    const w=readWeights();active.forEach(L=>w[L]=each);w[active[active.length-1]]+=100-each*active.length;
+    ['A','B','C'].forEach(L=>{$(SLIDERS[L]).value=bandActive(L)?w[L]:0;});
+  }
+  rebalance(null);
+});
+rebalance(null); // init
 
 // ── extract JSON robustly ──
 function extractJSON(raw){
@@ -369,6 +523,20 @@ function extractJSON(raw){
     if(c==='{')depth++;else if(c==='}'){depth--;if(depth===0){end=i;break;}}
   }
   return end!==-1?raw.slice(start,end+1):raw.slice(start);
+}
+
+// ── folk post-check ──
+function scanFolk(...texts){
+  const hay=texts.join(' \n ').toLowerCase();
+  const hits=[];
+  FOLK_FLAGS.forEach(flag=>{
+    const re=new RegExp('\\b'+flag.replace(/[-\/\\^$*+?.()|[\]{}]/g,'\\$&')+'\\b','i');
+    if(re.test(hay))hits.push(flag);
+  });
+  return [...new Set(hits)];
+}
+function folkFlagHTML(hits){
+  return `<div class="folk-flag"><b>⚠ Folk language detected:</b> ${esc(hits.join(', '))}. The output drifted toward folk/acoustic territory. Re-run for a clean pass, or nudge the engine away with the sound steer.</div>`;
 }
 
 // ── API layer ──
@@ -444,6 +612,11 @@ async function callAPI(keys,prompt,signal,retries,modelEl='model'){
   throw new Error(errors[errors.length-1]||'No API key available for the selected engine.');
 }
 
+// shared genre guard injected into every prompt
+const GENRE_GUARD=`HARD GENRE EXCLUSION (non-negotiable): The output must NEVER be, resolve into, or drift toward folk, folk-rock, acoustic singer-songwriter, Americana, country, or bluegrass. No acoustic guitar as the lead/identifying instrument, no folk instrumentation (banjo, mandolin, fiddle, dulcimer, autoharp, washboard). Even if an input artist leans acoustic/folk, translate ONLY their non-folk traits (melodic sensibility, vocal phrasing, dynamic shape) and render them through electric, electronic, and heavy instrumentation.
+
+POSITIVE FLOOR (required in every output): Every brief and tag set must make at least one of these load-bearing — heavily distorted/electric guitar, synth/programmed electronics, or a heavy/industrial production backbone — and must name a defined heavy or electronic production texture. This is a dark, electronic, heavy project. Keep it there.`;
+
 // ══════════════════════════
 //  LYRICS → PROMPT FLOW
 // ══════════════════════════
@@ -451,6 +624,8 @@ function buildPrompt(lyrics,vibe){
   return `You are a music producer and Suno AI prompt engineer for a dark, genre-blending project. You are given FINISHED LYRICS. Read them closely — theme, emotional arc, imagery, density, structure, where it's quiet and where it explodes — and produce a production brief plus a Suno-ready version of the lyrics.
 
 ABSOLUTE RULE: NEVER mention any real artist, band, musician, producer, or song name anywhere in any output. Describe sound only through genre, instruments, production techniques, vocal styles, BPM, texture, and dynamics. If a band name would normally describe the sound, translate it into its sonic ingredients instead.
+
+${GENRE_GUARD}
 
 ${vibe?`SOUND STEER from the writer (honor this, let the lyrics fill in the rest): "${vibe}"`:'No sound steer given — derive the sonic world entirely from what the lyrics imply.'}
 
@@ -506,8 +681,11 @@ async function build(){
   try{
     const r=await callAPI(keys,buildPrompt(lyrics,vibe),signal,retries,'model');
     const out=parseOut(r.text);
-    if(r.fellBack)setStatus('⚠ '+r.fellBack,true);else setStatus('');
-    renderOut(out,r.model);
+    const folk=scanFolk(out.sound_full,out.sound_short);
+    if(r.fellBack)setStatus('⚠ '+r.fellBack,true);
+    else if(folk.length)setStatus('⚠ Folk language flagged — see note below.','warn');
+    else setStatus('');
+    renderOut(out,r.model,folk);
     addHist({id:Date.now(),type:'lyrics',lyrics,vibe,out,model:r.model});
   }catch(e){
     if(e.name==='AbortError')setStatus('');
@@ -520,59 +698,56 @@ $('goBtn').addEventListener('click',build);
 // ══════════════════════════
 //  BAND FUSION FLOW
 // ══════════════════════════
-function buildFusionPrompt(bandA,songA1,songA2,bandB,songB1,songB2,notes){
-  const songsA=[songA1,songA2].filter(Boolean);
-  const songsB=[songB1,songB2].filter(Boolean);
-  const songLineA=songsA.length?`Reference songs (weight your analysis HERE, not the full catalog): ${songsA.join(' / ')}`:`No songs given — use full catalog, but note their most sonically distinctive period.`;
-  const songLineB=songsB.length?`Reference songs (weight your analysis HERE, not the full catalog): ${songsB.join(' / ')}`:`No songs given — use full catalog, but note their most sonically distinctive period.`;
-
-  return `You are a veteran music producer and recording engineer with encyclopedic knowledge of modern rock, metal, and alternative production. Your task: deeply analyze two specific artists (anchored to specific songs where given) and synthesize their sonic DNA into a single Suno-ready style prompt.
-
-ABSOLUTE NON-NEGOTIABLE RULE: Zero real names in output — no artists, bands, producers, engineers, song titles, or album names. Every sonic element must be translated into its raw ingredients: specific genres and subgenres, exact instruments and their treatment, production techniques, vocal approaches, BPM/tempo feel, tuning characteristics, mix signatures, dynamic structures. If you would normally name-drop, describe the sound instead.
-
-━━ ARTIST A: ${bandA} ━━
-${songLineA}
+function buildFusionPrompt(bands,notes){
+  // bands = [{name,songs:[],weight}] for active bands only
+  const sections=bands.map((b,idx)=>{
+    const letter=String.fromCharCode(65+idx);
+    const songLine=b.songs.length
+      ?`Reference songs (weight your analysis HERE, not the full catalog): ${b.songs.join(' / ')}`
+      :`No songs given — use full catalog, but note their most sonically distinctive period.`;
+    return `━━ ARTIST ${letter}: ${b.name} — BLEND WEIGHT ${b.weight}% ━━
+${songLine}
 
 Analyze in detail:
-- Exact genre tags (be granular: not just "metal" but which subgenre blend)
+- Exact genre tags (granular: not just "metal" but which subgenre blend)
 - Guitar: tuning feel, riff style, tone character (tight/loose, dry/wet, djent/chug/melodic)
 - Bass: presence in mix, style, relationship to guitar
 - Drums: kit character, programming feel, snare/kick treatment, tempo range
 - Vocals: range, technique, where they sit clean vs harsh vs falsetto vs chest vs whispered
 - Synths/keys/orchestration: role and density
-- Production signature: compression style, mix width, loudness, wet/dry balance, any signature FX
-- Dynamic architecture: how the song builds, where it explodes, where it breathes
-${songsA.length?`- Specific to ${songsA.join(' / ')}: what makes THESE songs sound the way they do vs the rest of the catalog`:''}
+- Production signature: compression, mix width, loudness, wet/dry balance, signature FX
+- Dynamic architecture: how songs build, where they explode, where they breathe${b.songs.length?`\n- Specific to ${b.songs.join(' / ')}: what makes THESE songs sound the way they do vs the rest of the catalog`:''}`;
+  }).join('\n\n');
 
-━━ ARTIST B: ${bandB} ━━
-${songLineB}
+  const weightLine=bands.map((b,idx)=>`Artist ${String.fromCharCode(65+idx)} (${b.name}) = ${b.weight}%`).join(', ');
 
-Analyze in detail:
-- Exact genre tags (granular)
-- Guitar: tuning feel, riff style, tone character
-- Bass: presence in mix, style
-- Drums: kit character, tempo range, feel
-- Vocals: range, technique, clean/harsh/falsetto/chest distribution
-- Synths/keys/orchestration: role and density
-- Production signature: compression, mix width, loudness, wet/dry, signature FX
-- Dynamic architecture: how songs build and release
-${songsB.length?`- Specific to ${songsB.join(' / ')}: what makes THESE songs sound the way they do`:''}
+  return `You are a veteran music producer and recording engineer with encyclopedic knowledge of modern rock, metal, and alternative production. Your task: deeply analyze the artists below (anchored to specific songs where given) and synthesize their sonic DNA into a single Suno-ready style prompt, blended according to the EXACT percentage weights provided.
+
+ABSOLUTE NON-NEGOTIABLE RULE: Zero real names in output — no artists, bands, producers, engineers, song titles, or album names. Every sonic element must be translated into its raw ingredients: specific genres and subgenres, exact instruments and treatment, production techniques, vocal approaches, BPM/tempo feel, tuning characteristics, mix signatures, dynamic structures. If you would normally name-drop, describe the sound instead.
+
+${GENRE_GUARD}
+
+${sections}
+
+━━ BLEND WEIGHTS (HONOR THESE EXACTLY) ━━
+${weightLine}
+These percentages are the recipe. The highest-weighted artist is the LOAD-BEARING sonic identity — its genre, guitar tone, drum feel, and production signature dominate the result. Lower-weighted artists are seasoning: they contribute specific, identifiable touches (a vocal approach, a synth texture, a rhythmic feel, a production trick) proportional to their weight, but they must NOT overtake the dominant sound. A 50/30/20 blend should clearly read as the 50% artist's world, colored by the others — not a flat three-way average.
 
 ━━ FUSION LOGIC ━━
-1. Identify shared sonic ground — what do both artists already have in common? That's the foundation.
-2. Identify what each uniquely contributes — what does A have that B doesn't, and vice versa?
-3. Determine the blend ratio — which elements are load-bearing for the fusion vs decorative?
-4. Resolve conflicts — if A has harsh screamed vocals and B has falsetto, decide how both coexist (e.g. verse/chorus split, layering, dynamic placement).
-5. Find the production approach that serves both — don't average them, find the setting where both identities are readable.
-${notes?`6. USER STEER (mandatory, honor this): "${notes}"`:''}
+1. Start from the highest-weighted artist as the foundation/skeleton.
+2. Layer in lower-weighted artists by their share — bigger weight = more audible influence.
+3. Identify shared sonic ground to anchor cohesion.
+4. Resolve vocal/tonal conflicts by dynamic placement (verse/chorus split, layering) weighted toward the dominant artist.
+5. Find one production approach that serves the blend; don't average into mush.
+${notes?`6. USER STEER (mandatory, honor this on top of the weights): "${notes}"`:''}
 
 ━━ OUTPUT ━━
 
 Produce TWO things:
 
-BLEND_FULL — 4-6 sentences. A specific, technical production brief. Name every key ingredient: exact genre blend, BPM or tempo feel, guitar tuning character and riff approach, drum treatment, bass presence, vocal split (who sings what where), synth/orchestration role, production texture, dynamic shape. No vague words like "atmospheric" without saying what creates it. No band names.
+BLEND_FULL — 4-6 sentences. A specific, technical production brief reflecting the weights. Name every key ingredient: exact genre blend, BPM/tempo feel, guitar tuning character and riff approach, drum treatment, bass presence, vocal split (who-style sings what where), synth/orchestration role, production texture, dynamic shape. State which sound dominates and which color it. No vague words like "atmospheric" without saying what creates it. No band names.
 
-BLEND_SHORT — HARD LIMIT: under 1000 characters. Comma-separated Suno style tags. Dense and precise. Include: subgenres, tempo descriptor, guitar descriptors, vocal descriptors, production textures, dynamic descriptors, mood/energy tags, instrumentation tags. No sentences. No names. Every tag must be a real sonic descriptor that Suno can act on.
+BLEND_SHORT — HARD LIMIT: under 1000 characters. Comma-separated Suno style tags, ordered so the dominant artist's descriptors come first. Dense and precise: subgenres, tempo, guitar descriptors, vocal descriptors, production textures, dynamic descriptors, mood/energy, instrumentation. No sentences. No names. Every tag a real sonic descriptor Suno can act on.
 
 Respond ONLY with a valid JSON object. No markdown fences. No commentary. Start with { end with }.
 
@@ -590,13 +765,15 @@ function parseFusionOut(text){
 }
 
 async function buildFusion(){
-  const bandA=$('bandA').value.trim();
-  const bandB=$('bandB').value.trim();
-  if(!bandA||!bandB){setStatus('Enter both bands.',true,'fusionStatus');return;}
-  const songA1=$('songA1').value.trim();
-  const songA2=$('songA2').value.trim();
-  const songB1=$('songB1').value.trim();
-  const songB2=$('songB2').value.trim();
+  const rawBands=[
+    {name:$('bandA').value.trim(),songs:[$('songA1').value.trim(),$('songA2').value.trim()].filter(Boolean),weight:parseInt($('weightA').value,10)||0,letter:'A'},
+    {name:$('bandB').value.trim(),songs:[$('songB1').value.trim(),$('songB2').value.trim()].filter(Boolean),weight:parseInt($('weightB').value,10)||0,letter:'B'},
+    {name:$('bandC').value.trim(),songs:[$('songC1').value.trim(),$('songC2').value.trim()].filter(Boolean),weight:parseInt($('weightC').value,10)||0,letter:'C'},
+  ];
+  const bands=rawBands.filter(b=>b.name);
+  if(bands.length<2){setStatus('Enter at least two bands.',true,'fusionStatus');return;}
+  const total=bands.reduce((s,b)=>s+b.weight,0);
+  if(total!==100){setStatus('Weights must total 100% — adjust the sliders.',true,'fusionStatus');return;}
   const notes=$('fusionNotes').value.trim();
 
   const keys={groq:$('groqKey').value.trim(),gemini:$('geminiKey').value.trim(),anthropic:$('anthropicKey').value.trim()};
@@ -607,15 +784,18 @@ async function buildFusion(){
   const {signal}=fusionController;
   $('fusionBtn').disabled=true;
   $('fusionResults').innerHTML='';
-  setStatus('Analyzing both signals, blending the frequencies…','','fusionStatus');
+  setStatus('Analyzing all signals, blending the frequencies…','','fusionStatus');
   $('fusionStatus').className='status magenta';
 
   try{
-    const r=await callAPI(keys,buildFusionPrompt(bandA,songA1,songA2,bandB,songB1,songB2,notes),signal,retries,'fusionModel');
+    const r=await callAPI(keys,buildFusionPrompt(bands,notes),signal,retries,'fusionModel');
     const out=parseFusionOut(r.text);
-    if(r.fellBack)setStatus('⚠ '+r.fellBack,true,'fusionStatus');else setStatus('','','fusionStatus');
-    renderFusionOut(out,r.model,bandA,bandB);
-    addHist({id:Date.now(),type:'fusion',bandA,songA1,songA2,bandB,songB1,songB2,notes,out,model:r.model});
+    const folk=scanFolk(out.blend_full,out.blend_short);
+    if(r.fellBack)setStatus('⚠ '+r.fellBack,true,'fusionStatus');
+    else if(folk.length)setStatus('⚠ Folk language flagged — see note below.','warn','fusionStatus');
+    else setStatus('','','fusionStatus');
+    renderFusionOut(out,r.model,bands,folk);
+    addHist({id:Date.now(),type:'fusion',bands,notes,out,model:r.model});
   }catch(e){
     if(e.name==='AbortError')setStatus('','','fusionStatus');
     else setStatus('Failed — '+e.message,true,'fusionStatus');
@@ -634,7 +814,7 @@ function copyBtn(el,text){
   });
 }
 
-function renderOut(out,model){
+function renderOut(out,model,folk){
   const box=$('results');box.innerHTML='';
 
   if(out.title_suggestions&&out.title_suggestions.length){
@@ -674,15 +854,22 @@ function renderOut(out,model){
     copyBtn(el.querySelector('.copy'),b.body);
     box.appendChild(el);
   });
+  if(folk&&folk.length){const f=document.createElement('div');f.innerHTML=folkFlagHTML(folk);box.appendChild(f.firstChild);}
   window.scrollTo({top:box.offsetTop-20,behavior:'smooth'});
 }
 
-function renderFusionOut(out,model,bandA,bandB){
+function renderFusionOut(out,model,bands,folk){
   const box=$('fusionResults');box.innerHTML='';
 
-  // signal bar
+  // signal bar (weighted, supports 2-3 bands)
+  const COLORS={0:'sig-a',1:'sig-b',2:'sig-c'};
   const bar=document.createElement('div');bar.className='fusion-signal';
-  bar.innerHTML=`<span class="sig-a">${esc(bandA)}</span><div class="sig-line"></div><span class="sig-cross">×</span><div class="sig-line"></div><span class="sig-b">${esc(bandB)}</span>`;
+  const parts=[];
+  bands.forEach((b,i)=>{
+    parts.push(`<span class="${COLORS[i]}">${esc(b.name)} ${b.weight}%</span>`);
+    if(i<bands.length-1)parts.push(`<span class="sig-cross">×</span>`);
+  });
+  bar.innerHTML=`<div class="sig-line"></div>${parts.join('')}<div class="sig-line"></div>`;
   box.appendChild(bar);
 
   const shortLen=out.blend_short.length;
@@ -697,6 +884,7 @@ function renderFusionOut(out,model,bandA,bandB){
     copyBtn(el.querySelector('.copy'),b.body);
     box.appendChild(el);
   });
+  if(folk&&folk.length){const f=document.createElement('div');f.innerHTML=folkFlagHTML(folk);box.appendChild(f.firstChild);}
   window.scrollTo({top:box.offsetTop-20,behavior:'smooth'});
 }
 
@@ -716,25 +904,33 @@ function renderHist(){
   list.innerHTML='';
   arr.forEach(e=>{
     const isFusion=e.type==='fusion';
-    const name=isFusion?`${e.bandA} × ${e.bandB}`:(firstLine(e.lyrics||'').slice(0,42));
+    // support both old (bandA/bandB) and new (bands[]) history shapes
+    let name;
+    if(isFusion){
+      if(Array.isArray(e.bands))name=e.bands.map(b=>`${b.name} ${b.weight}%`).join(' × ');
+      else name=`${e.bandA} × ${e.bandB}`;
+    }else{
+      name=firstLine(e.lyrics||'').slice(0,42);
+    }
     const item=document.createElement('div');
     item.className='hist-item'+(isFusion?' fusion-hist':'');
     item.innerHTML=`<div class="hi-main"><div class="hi-name">${esc(name)}</div><div class="hi-meta">${fmtDate(e.id)} · via ${esc(e.model||'')}</div></div>
       <span class="hi-badge ${isFusion?'fusion-badge':''}">${isFusion?'Fusion':'Prompt'}</span><button class="hi-del" title="Delete">✕</button>`;
     item.querySelector('.hi-main').addEventListener('click',()=>{
       if(isFusion){
-        // switch to fusion tab and render
         document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
         document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
         document.querySelector('[data-tab="fusion-tab"]').classList.add('active');
         $('fusion-tab').classList.add('active');
-        renderFusionOut(e.out,e.model,e.bandA,e.bandB);
+        const bands=Array.isArray(e.bands)?e.bands
+          :[{name:e.bandA,weight:50},{name:e.bandB,weight:50}];
+        renderFusionOut(e.out,e.model,bands,scanFolk(e.out.blend_full,e.out.blend_short));
       }else{
         document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
         document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
         document.querySelector('[data-tab="lyrics-tab"]').classList.add('active');
         $('lyrics-tab').classList.add('active');
-        renderOut(e.out,e.model);
+        renderOut(e.out,e.model,scanFolk(e.out.sound_full,e.out.sound_short));
       }
     });
     item.querySelector('.hi-del').addEventListener('click',ev=>{ev.stopPropagation();delHist(e.id);});
