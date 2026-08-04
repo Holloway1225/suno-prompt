@@ -14,6 +14,7 @@
     --amber:#e6a939;--green:#39e67a;--purple:#b07fff;
     --magenta:#ff39b0;--magenta-dim:#8c1b61;
     --orange:#ff8c39;--orange-dim:#8c4c1b;
+    --lime:#c6ff39;--lime-dim:#7a9c1b;
     --text:#cdd6df;--muted:#6b7986;--white:#f4f8fb;
   }
   *{box-sizing:border-box;margin:0;padding:0}
@@ -125,6 +126,7 @@
   .out.title-block{border-left:3px solid var(--purple);}
   .out.fusion-blend{border-left:3px solid var(--magenta);border-top:1px solid rgba(255,57,176,0.2);}
   .out.fusion-full{border-left:3px solid rgba(255,57,176,0.5);}
+  .out.verify{border-left:3px solid var(--lime);border-top:1px solid rgba(198,255,57,0.15);}
   @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
   .out-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;}
   .out-title{font-family:'Major Mono Display',monospace;font-size:13px;letter-spacing:.04em;text-transform:lowercase;}
@@ -134,12 +136,14 @@
   .out.title-block .out-title{color:var(--purple);}
   .out.fusion-blend .out-title{color:var(--magenta);}
   .out.fusion-full .out-title{color:rgba(255,57,176,0.7);}
+  .out.verify .out-title{color:var(--lime);}
   .out-count{font-size:10px;color:var(--muted);letter-spacing:.08em;}
   .out-count.over{color:var(--red);}
   .out-body{font-size:13.5px;line-height:1.75;color:var(--text);white-space:pre-wrap;word-break:break-word;}
   .out.short .out-body{font-family:'Space Mono',monospace;font-size:13px;color:#bdf0d6;}
   .out.fusion-blend .out-body{font-family:'Space Mono',monospace;font-size:13px;color:#ffb8e6;}
   .out.title-block .out-body{font-family:'Major Mono Display',monospace;font-size:15px;color:var(--white);letter-spacing:.04em;}
+  .out.verify .out-body{font-family:'Space Mono',monospace;font-size:13px;color:#e6ffb0;}
 
   .folk-flag{margin-top:14px;border:1px solid var(--amber);background:rgba(230,169,57,0.08);border-radius:10px;padding:12px 14px;font-size:12px;line-height:1.6;color:var(--amber);letter-spacing:.03em;}
   .folk-flag b{color:#ffce6b;}
@@ -199,7 +203,7 @@
     <div class="kicker">Cryptid Static · Signal Tools</div>
     <h1><span class="glitch" data-t="SUNO PROMPT">SUNO PROMPT</span></h1>
     <p class="sub">Paste finished lyrics → <b>title suggestions + sound prompt + Suno-ready lyrics</b>, all copyable.</p>
-    <div class="ver">v2.6</div>
+    <div class="ver">v2.7</div>
   </header>
 
   <!-- Tab Nav -->
@@ -217,8 +221,8 @@
 
       <div class="field">
         <label for="vibe">Sound steer <span style="color:var(--cyan-dim)">(optional)</span></label>
-        <div class="field-hint">A nudge if you have one — genre, energy, reference feel. Leave blank to let the lyrics decide.</div>
-        <input id="vibe" class="in" type="text" placeholder="e.g. dark glitch nu-metal, screamed + clean, industrial breakdown" />
+        <div class="field-hint">A nudge if you have one — genre, energy, reference feel, or even a band/artist name to steer toward (the output will never name it, just chase its sound). Leave blank to let the lyrics decide.</div>
+        <input id="vibe" class="in" type="text" placeholder="e.g. dark glitch nu-metal, screamed + clean, or a band name like Deftones" />
       </div>
 
       <div class="opts-row">
@@ -343,7 +347,8 @@
   <details class="crit">
     <summary>How it works</summary>
     <div class="crit-body">
-      <b>From Lyrics</b> — Paste finished lyrics. The engine reads them and builds four things: title suggestions pulled from the lyric's actual language, a full sound production brief, a short Suno-ready style tag (under 1000 chars), and the same lyrics normalized with Suno section tags. <b>No band or artist names ever.</b><br><br>
+      <b>From Lyrics</b> — Paste finished lyrics. The engine reads them and builds four things: title suggestions pulled from the lyric's actual language, a full sound production brief, a short Suno-ready style tag (under 1000 chars), and the same lyrics normalized with Suno section tags. <b>No band or artist names ever</b> in the output — even if you type one into the sound steer box, it's only used to chase that sound, not to name it.<br><br>
+      <b>Verify prompt</b> — If you put anything in the sound steer box, you'll also get a copyable prompt built to hand to ChatGPT (or any other model): it asks whether the generated sound prompt actually matches what you steered toward, and if not, to rewrite one that does. Handy as a second opinion or a cross-check between tools.<br><br>
       <b>Band Fusion</b> — Enter two or three bands and set a blend weight on each (sliders auto-balance to 100%). Add up to 2 reference songs each. The engine deep-reads each sonic identity — genre, instrumentation, production technique, vocal style, dynamics, texture — then blends them by weight into a cohesive Suno-ready style prompt under 1000 characters. The percentages tell it which sound is load-bearing and which is seasoning. All output is pure sonic description; no real names appear anywhere.<br><br>
       <b>No folk</b> — Both flows hard-exclude folk, acoustic singer-songwriter, Americana, and country, and require a heavy/electronic/electric backbone. A post-check scans the output and flags any folk language that slips through.<br><br>
       <b>Engine</b> — Llama is fast and free. Claude reads the nuance deepest. Everything is copyable, and every run is saved to History on this device.
@@ -623,11 +628,11 @@ POSITIVE FLOOR (required in every output): Every brief and tag set must make at 
 function buildPrompt(lyrics,vibe){
   return `You are a music producer and Suno AI prompt engineer for a dark, genre-blending project. You are given FINISHED LYRICS. Read them closely — theme, emotional arc, imagery, density, structure, where it's quiet and where it explodes — and produce a production brief plus a Suno-ready version of the lyrics.
 
-ABSOLUTE RULE: NEVER mention any real artist, band, musician, producer, or song name anywhere in any output. Describe sound only through genre, instruments, production techniques, vocal styles, BPM, texture, and dynamics. If a band name would normally describe the sound, translate it into its sonic ingredients instead.
+ABSOLUTE RULE: NEVER mention any real artist, band, musician, producer, or song name anywhere in any output. Describe sound only through genre, instruments, production techniques, vocal styles, BPM, texture, and dynamics. If a band name would normally describe the sound, translate it into its sonic ingredients instead. This applies even if the sound steer below contains a real artist name — use it only as a reference for translation, never repeat it in your output.
 
 ${GENRE_GUARD}
 
-${vibe?`SOUND STEER from the writer (honor this, let the lyrics fill in the rest): "${vibe}"`:'No sound steer given — derive the sonic world entirely from what the lyrics imply.'}
+${vibe?`SOUND STEER from the writer (honor this, let the lyrics fill in the rest — if this names a real artist/band, translate their sonic identity into ingredients, never write their name back into any output): "${vibe}"`:'No sound steer given — derive the sonic world entirely from what the lyrics imply.'}
 
 Produce FOUR things:
 
@@ -665,6 +670,10 @@ function parseOut(text){
   return d;
 }
 
+function buildVerifyPrompt(vibe,soundShort){
+  return `Does this Suno sound prompt sound like ${vibe}? If not, rewrite a Suno sound prompt that matches ${vibe}:\n\n${soundShort}`;
+}
+
 async function build(){
   const lyrics=$('lyrics').value.trim();
   const vibe=$('vibe').value.trim();
@@ -685,7 +694,7 @@ async function build(){
     if(r.fellBack)setStatus('⚠ '+r.fellBack,true);
     else if(folk.length)setStatus('⚠ Folk language flagged — see note below.','warn');
     else setStatus('');
-    renderOut(out,r.model,folk);
+    renderOut(out,r.model,folk,vibe);
     addHist({id:Date.now(),type:'lyrics',lyrics,vibe,out,model:r.model});
   }catch(e){
     if(e.name==='AbortError')setStatus('');
@@ -814,7 +823,7 @@ function copyBtn(el,text){
   });
 }
 
-function renderOut(out,model,folk){
+function renderOut(out,model,folk,vibe){
   const box=$('results');box.innerHTML='';
 
   if(out.title_suggestions&&out.title_suggestions.length){
@@ -854,6 +863,15 @@ function renderOut(out,model,folk){
     copyBtn(el.querySelector('.copy'),b.body);
     box.appendChild(el);
   });
+
+  if(vibe){
+    const verifyText=buildVerifyPrompt(vibe,out.sound_short);
+    const vEl=document.createElement('div');vEl.className='out verify';vEl.style.animationDelay=((blocks.length+1)*0.07)+'s';
+    vEl.innerHTML=`<div class="out-head"><div class="out-title">chatgpt verify prompt</div><div style="display:flex;gap:10px;align-items:center"><button class="copy">Copy</button></div></div><div class="out-body">${esc(verifyText)}</div>`;
+    copyBtn(vEl.querySelector('.copy'),verifyText);
+    box.appendChild(vEl);
+  }
+
   if(folk&&folk.length){const f=document.createElement('div');f.innerHTML=folkFlagHTML(folk);box.appendChild(f.firstChild);}
   window.scrollTo({top:box.offsetTop-20,behavior:'smooth'});
 }
@@ -930,7 +948,7 @@ function renderHist(){
         document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
         document.querySelector('[data-tab="lyrics-tab"]').classList.add('active');
         $('lyrics-tab').classList.add('active');
-        renderOut(e.out,e.model,scanFolk(e.out.sound_full,e.out.sound_short));
+        renderOut(e.out,e.model,scanFolk(e.out.sound_full,e.out.sound_short),e.vibe||'');
       }
     });
     item.querySelector('.hi-del').addEventListener('click',ev=>{ev.stopPropagation();delHist(e.id);});
